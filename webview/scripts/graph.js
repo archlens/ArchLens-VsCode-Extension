@@ -16,9 +16,10 @@ function make_graph(elements){
                 'width': ((node) => {return (node.data('label').length)*font_width+block_extra_length}), 
                 'height': 40,
                 'shape': 'polygon',
-                'shape-polygon-points': ((node) => {const label_width = node.data('label').length*font_width; const label_ratio = (label_width/(label_width+block_extra_length)); const angle_ratio = (10/(label_width+block_extra_length)); return [-1,-1, label_ratio,-1, (label_ratio+angle_ratio),-.1, -1,-.1, 1,-.1, 1,1, -1,1]}), // Yes
+                'shape-polygon-points': ((node) => {const label_width = node.data('label').length*font_width; const label_ratio = (label_width/(label_width+block_extra_length)); const angle_ratio = (10/(label_width+block_extra_length)); return [-1,-1, label_ratio,-1, (label_ratio+angle_ratio),-.1, 1,-.1, 1,1, -1,1, -1,-1, -1,-.1, (label_ratio+angle_ratio),-.1, -1,-.1, -1,-1]}), // Yes
                 'color': '#000000', 
                 'border-width': border_width, 'border-color': '#000000',
+                'border-cap': 'butt',
                 'label': 'data(label)',
                 'text-halign': 'right', 'text-valign': 'top',
                 'text-margin-x': (node) => {return ((node.data('label').length)*font_width*-1 - block_extra_length + 10)},
