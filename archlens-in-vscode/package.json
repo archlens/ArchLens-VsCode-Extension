@@ -14,8 +14,8 @@
   "contributes": {
     "commands": [
       {
-        "command": "archlens-in-vscode.helloWorld",
-        "title": "Hello World"
+        "command": "archlens-in-vscode.openGraphView",
+        "title": "Open Graph-view"
       }
     ]
   },
