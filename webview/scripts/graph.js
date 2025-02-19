@@ -46,3 +46,5 @@ window.addEventListener('message', event => {
             make_graph(message.graph);
     }
 });
+
+vscode.postMessage({command: 'get_graph'});
