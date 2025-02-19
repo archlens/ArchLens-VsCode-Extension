@@ -2,7 +2,6 @@ import cytoscape from "../node_modules/cytoscape/dist/cytoscape.esm.mjs";
 const vscode = acquireVsCodeApi();
 
 function make_graph(elements){
-    // Initialize Cytoscape
     var cy = cytoscape({
         container: document.getElementById('graph'),
         elements: elements,
@@ -43,6 +42,6 @@ window.addEventListener('message', event => {
     const message = event.data;
     switch (message.command){
         case 'update_graph':
-            make_graph(JSON.parse(message.graph));
+            make_graph(message.graph);
     }
 });

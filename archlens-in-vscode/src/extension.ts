@@ -43,6 +43,14 @@ export function activate(context: vscode.ExtensionContext) {
                 undefined,
                 context.subscriptions
             );
+
+            panel.webview.postMessage({ command: "update_graph",
+                                        graph:  [
+                                                    { data: { id: "a" } },
+                                                    { data: { id: "b" } },
+                                                    { data: { id: "ab", source: "a", target: "b" } },
+                                                ]
+            })
         })
     );
 
