@@ -48,7 +48,7 @@ export function activate(context: vscode.ExtensionContext) {
                                         graph:  [
                                                     { data: { id: "a" } },
                                                     { data: { id: "b" } },
-                                                    { data: { id: "ab", source: "a", target: "b" } },
+                                                    { data: { id: "ab", source: "a", target: "b" , label: "1"} },
                                                 ]
             })
         })

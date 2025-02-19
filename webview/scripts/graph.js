@@ -17,6 +17,7 @@ function make_graph(elements){
             { selector: 'edge', style: {
                 'width': 3, 'line-color': '#2c3e50',
                 'target-arrow-shape': 'triangle', 'curve-style': 'bezier',
+                'label': 'data(label)',
                 'color': '#fff', 'text-valign': 'center',
             }},
             { selector: '[type = "special"]', style: {
