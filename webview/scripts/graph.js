@@ -1,5 +1,5 @@
-const cytoscape = include("cytoscape");
-const vscode = acquireVsCodeAPI();
+import cytoscape from "../node_modules/cytoscape/dist/cytoscape.esm.mjs";
+const vscode = acquireVsCodeApi();
 
 // Get elements from postmessage
 const elements = [
@@ -24,7 +24,6 @@ var cy = cytoscape({
         { selector: 'edge', style: {
             'width': 3, 'line-color': '#2c3e50',
             'target-arrow-shape': 'triangle', 'curve-style': 'bezier',
-            'label': 'data(label)',
             'color': '#fff', 'text-valign': 'center',
         }},
         { selector: '[type = "special"]', style: {
@@ -40,6 +39,6 @@ var cy = cytoscape({
 cy.on('tap', 'edge', function(evt) {
     var edge = evt.target;
     //vscode.postMessage({ command: "edgeClicked", source: edge.source().id(), target: edge.target().id() });
-    console.log(edge.source().id()+ " -> "+edge.target().id());
+    vscode.postMessage({command: 'edge_clicked', text: (edge.source().id()+ " -> "+edge.target().id())});
     
 });

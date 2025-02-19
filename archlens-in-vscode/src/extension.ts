@@ -30,6 +30,19 @@ export function activate(context: vscode.ExtensionContext) {
             );
 
             panel.webview.html = getWebviewContent(panel.webview, context.extensionUri);
+
+            // Handle messages from the webview
+            panel.webview.onDidReceiveMessage(
+                message => {
+                switch (message.command) {
+                    case 'edge_clicked':
+                        vscode.window.showInformationMessage(message.text);
+                        return;
+                }
+                },
+                undefined,
+                context.subscriptions
+            );
         })
     );
 
