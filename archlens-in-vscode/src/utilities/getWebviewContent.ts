@@ -7,7 +7,7 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
     let html = fs.readFileSync(indexPath.fsPath, 'utf8');
     // Replace placeholders with actual URIs
 
-    html = html.replace("{baseUri}", vscode.Uri.joinPath(extensionUri, '..' ,'webview').toString());
+    html = html.replace("{baseUri}", webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, '..' ,'webview')).toString());
 
     return html;
 }

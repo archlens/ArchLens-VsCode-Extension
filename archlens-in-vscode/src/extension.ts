@@ -24,8 +24,8 @@ export function activate(context: vscode.ExtensionContext) {
                 {
                     enableScripts: true,
                     localResourceRoots: [vscode.Uri.joinPath(context.extensionUri, "..", "webview"),
-                    vscode.Uri.joinPath(context.extensionUri, "..", "webview", "scripts"
-                    )]
+                                         vscode.Uri.joinPath(context.extensionUri, "..", "webview", "scripts")
+                                        ]
                 }
             );
 
