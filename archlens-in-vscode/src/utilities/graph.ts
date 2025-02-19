@@ -71,3 +71,32 @@ export function buildGraph(json :string) : Set<GraphModule>{
 
     return graphSet
 }
+
+export function makeElementsList(g : Set<GraphModule>){
+    let elements = Array.from(g).map<object>((m, i, elements) => { return { data: { id: m.name, label: m.name, type: 'Module' }}});
+
+    let edges = new Map;
+
+    for(let m of g) {
+        for (let from of m.files){
+            for( let to of from.edge_to){
+                if (from.module != to.module){
+                    let data = null;
+                    if(edges.has(from.module!.name+to.module!.name)){
+                        data = edges.get(from.module!.name+to.module!.name);
+                        data.data.label++;
+                    } else {
+                        data = { data: {id: (from.module!.name+to.module!.name), source: m.name, target: to.module!.name, label:1}};
+                    }
+                    edges.set(from.module!.name+to.module!.name, data);
+                }
+            }
+        }
+    }
+
+    for (let [key, data] of edges){
+        elements.push(data);
+    }
+
+    return elements;
+}

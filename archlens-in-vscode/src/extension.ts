@@ -2,6 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import { getWebviewContent } from './utilities/getWebviewContent';
+import * as graph_util from "./utilities/graph";
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -44,13 +45,13 @@ export function activate(context: vscode.ExtensionContext) {
                 context.subscriptions
             );
 
+            let g = graph_util.buildGraph('{"modules": [{"name": "core", "files": ["bt_file.py", "bt_graph.py", "bt_module.py", "__init__.py"]}, {"name": "plantuml", "files": ["fetch_git.py", "plantuml_file_creator.py", "__init__.py"]}, {"name": "plantumlv2", "files": ["pu_entities.py", "pu_manager.py", "utils.py", "__init__.py"]}, {"name": "utils", "files": ["config_manager_singleton.py", "functions.py", "path_manager_singleton.py", "__init__.py"]}], "files": [{"name": "cli_interface.py", "edge_to": ["path_manager_singleton.py", "config_manager_singleton.py", "pu_manager.py", "bt_graph.py", "fetch_git.py"]}, {"name": "main.py", "edge_to": []}, {"name": "__init__.py", "edge_to": []}, {"name": "bt_file.py", "edge_to": ["bt_module.py"]}, {"name": "bt_graph.py", "edge_to": ["bt_file.py", "bt_module.py"]}, {"name": "bt_module.py", "edge_to": ["bt_file.py"]}, {"name": "__init__.py", "edge_to": []}, {"name": "fetch_git.py", "edge_to": []}, {"name": "plantuml_file_creator.py", "edge_to": ["bt_module.py", "path_manager_singleton.py", "config_manager_singleton.py"]}, {"name": "__init__.py", "edge_to": []}, {"name": "pu_entities.py", "edge_to": ["bt_module.py", "utils.py", "config_manager_singleton.py"]}, {"name": "pu_manager.py", "edge_to": ["bt_graph.py", "pu_entities.py", "utils.py"]}, {"name": "utils.py", "edge_to": ["bt_module.py", "path_manager_singleton.py"]}, {"name": "__init__.py", "edge_to": []}, {"name": "config_manager_singleton.py", "edge_to": []}, {"name": "functions.py", "edge_to": ["bt_graph.py"]}, {"name": "path_manager_singleton.py", "edge_to": []}, {"name": "__init__.py", "edge_to": []}]}')
+
+            
+
             panel.webview.postMessage({ command: "update_graph",
-                                        graph:  [
-                                                    { data: { id: "a" } },
-                                                    { data: { id: "b" } },
-                                                    { data: { id: "ab", source: "a", target: "b" , label: "1"} },
-                                                ]
-            })
+                                        graph:  graph_util.makeElementsList(g)
+                                    })
         })
     );
 
