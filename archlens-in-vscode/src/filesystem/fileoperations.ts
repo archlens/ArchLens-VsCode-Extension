@@ -1,14 +1,13 @@
-import * as fs from 'fs';
-import { FileSystemError } from 'vscode';
+import * as vscode from 'vscode';
 
+export async function readFileAsJSON(path: string): Promise<string> {
+    const fileUri = vscode.Uri.parse(path);
 
-function readFileAsJSON(path: string): string {
-
-    if(!fs.existsSync(path)) {
-        throw new FileSystemError(`Could not find file: ${path}`);
+    try {
+        const uri = vscode.Uri.parse(path);
+        const uint8Array = await vscode.workspace.fs.readFile(uri);
+        return new TextDecoder().decode(uint8Array);
+    } catch (error) {
+        throw vscode.FileSystemError.FileNotFound(fileUri);
     }
-
-    const fileContent = fs.readFileSync(path, 'utf-8');
-
-    return fileContent;
 }
