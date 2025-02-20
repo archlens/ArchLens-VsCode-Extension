@@ -23,7 +23,7 @@ function make_graph(elements){
                 'label': 'data(label)',
                 'text-halign': 'right', 'text-valign': 'top',
                 'text-margin-x': (node) => {return ((node.data('label').length)*font_width*-1 - block_extra_length + 10)},
-                'text-margin-y': font_height+2,
+                'text-margin-y': font_height+1,
                 'font-family': 'monospace',
                 'font-size': font_height
 
