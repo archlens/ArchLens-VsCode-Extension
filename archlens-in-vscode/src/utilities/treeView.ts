@@ -3,24 +3,31 @@ import * as vscode from 'vscode';
 class TreeDataProvider implements vscode.TreeDataProvider<string> {
     
     constructor(
-        private items: string[]
+        private data: Map<string, string[]>
     ){}
 
     getTreeItem(element: string): vscode.TreeItem {
-        return new vscode.TreeItem(element, vscode.TreeItemCollapsibleState.None);
+        const hasChildren = this.data.has(element);
+        return new vscode.TreeItem(
+            element,
+            hasChildren ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None
+        );
     }
 
-    getChildren(element?: string | undefined): vscode.ProviderResult<string[]> {
-        return element ? [] : this.items;
-    }    
+    getChildren(element?: string): string[] {
+        if (!element) {
+            return Array.from(this.data.keys());
+        }
+        return this.data.get(element) ?? [];
+    }  
 }
 
 
-export function showTreeView(context: vscode.ExtensionContext, files : string[]) : void {
+export function showTreeView(context: vscode.ExtensionContext, files : Map<string, string[]>) : void {
     const treeViewProvider = new TreeDataProvider(files);
     const treeView = vscode.window.createTreeView(
-        'filesWithDependancyTree',
-        {treeDataProvider: treeViewProvider}
+        'filesWithDependencyTree',
+        {treeDataProvider: treeViewProvider},
     );
 
     context.subscriptions.push(treeView);

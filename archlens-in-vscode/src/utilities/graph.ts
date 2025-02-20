@@ -95,17 +95,23 @@ export function makeElementsList(g : Map<string,GraphModule>){
     return elements;
 }
 
-export function getFilenamesFromEdge(g : Map<string, GraphModule>, source : string, target : string) {
+export function getFilenamesFromEdge(g : Map<string, GraphModule>, source : string, target : string) : Map<string, string[]>{
     let source_module = g.get(source)!;
     let target_module = g.get(target)!;
 
-    let files = [];
+    let files = new Map<string, string[]>();
 
     for (let f of source_module.files){
+        let lst = [];
+        
         for (let edge of f.edge_to){
             if (target_module.files.has(edge)) {
-                files.push(edge.name);
+                lst.push(edge.name);
             }
+        }
+
+        if(lst.length != 0) {
+            files.set(f.name, lst);
         }
     }
 
