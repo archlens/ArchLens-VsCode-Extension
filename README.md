@@ -57,7 +57,14 @@ Now you are ready to use ArchLens!
 The extension itself is divided into two modules:
 
 ### archlens-in-vscode
-This is the backend part extension, setting up extension itself and handling the graph's datastructure and parsing. To run the extension make sure to compile this module first using
+This is the backend part extension, setting up extension itself and handling the graph's datastructure and parsing.
+After cloning the repository go to the `archlens-in-vscode` directory and use the command
+```shell
+npm install
+```
+to set up the npm-project.
+
+ To run the extension make sure to compile the module first using
 ```shell
 npm run compile
 ```
