@@ -52,3 +52,17 @@ python ./ArchLens/setup.py develop
 ```
 
 Now you are ready to use ArchLens!
+
+## VsCode Extension
+The extension itself is divided into two modules:
+
+### archlens-in-vscode
+This is the backend part extension, setting up extension itself and handling the graph's datastructure and parsing. To run the extension make sure to compile this module first using
+```shell
+npm run compile
+```
+
+When the project is compiled you can run the extension by pressing `f5` in vscode. This will open a new instance of vscode where the extension is running.
+
+### webview
+This module is responsible for the webview itself. When making changes in the webview you don't need to restart the extension.
