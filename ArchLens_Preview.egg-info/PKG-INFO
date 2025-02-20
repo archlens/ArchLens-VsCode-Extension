@@ -1,0 +1,25 @@
+Metadata-Version: 2.2
+Name: ArchLens-Preview
+Version: 0.1.1
+Summary: Designed for visualizing package dependencies and highlighting differences between branches in GitHub pull requests. It offers customization options to tailor package views.
+Home-page: https://github.com/archlens/ArchLens
+Author: The ArchLens Team
+Author-email: sboj@itu.dk
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.9
+Requires-Dist: plantuml
+Requires-Dist: typer
+Requires-Dist: astroid
+Requires-Dist: six
+Requires-Dist: requests
+Requires-Dist: jsonschema
+Requires-Dist: gitpython
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: home-page
+Dynamic: requires-dist
+Dynamic: summary
+
+This is the long description
