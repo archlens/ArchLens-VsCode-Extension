@@ -21,7 +21,7 @@ export function activate(context: vscode.ExtensionContext) {
             const panel = vscode.window.createWebviewPanel(
                 'GraphView',
                 'Graph-view',
-                vscode.ViewColumn.One,
+                vscode.ViewColumn.Two,
                 {
                     enableScripts: true,
                     localResourceRoots: [vscode.Uri.joinPath(context.extensionUri, "..", "webview"),
@@ -29,6 +29,7 @@ export function activate(context: vscode.ExtensionContext) {
                                         ]
                 }
             );
+            
 
             panel.webview.html = getWebviewContent(panel.webview, context.extensionUri);
 
