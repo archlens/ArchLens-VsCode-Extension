@@ -3,6 +3,7 @@
 import * as vscode from 'vscode';
 import { getWebviewContent } from './utilities/getWebviewContent';
 import * as graph_util from "./utilities/graph";
+import { showTreeView } from './utilities/treeView';
 import * as archlens from './archlens/archLens';
 
 // This method is called when your extension is activated
@@ -45,7 +46,8 @@ export function activate(context: vscode.ExtensionContext) {
                 message => {
                 switch (message.command) {
                     case 'edge_clicked':
-                        vscode.window.showInformationMessage(message.text);
+                        const files = graph_util.getFilenamesFromEdge(g, message.source, message.target);
+                        showTreeView(context, files);
                         return;
                     case 'get_graph':
                         panel.webview.postMessage({ command: "update_graph",

@@ -26,7 +26,7 @@ class GraphModule {
     ) {}
 }
 
-export function buildGraph(json :string) : Set<GraphModule>{
+export function buildGraph(json :string) : Map<string,GraphModule>{
     const graph : Graph = JSON.parse(json)
     let modules = graph.modules;
     let files = graph.files;
@@ -63,22 +63,16 @@ export function buildGraph(json :string) : Set<GraphModule>{
         parsedModules.set(m.name, parsedModule);
     }
 
-    let graphSet = new Set<GraphModule>;
-
-    for (let m of modules) {
-        graphSet.add(parsedModules.get(m.name)!)
-    }
-
-    return graphSet
+    return parsedModules;
 }
 
-export function makeElementsList(g : Set<GraphModule>){
-    let elements = Array.from(g).map<object>((m, i, elements) => { return { data: { id: m.name, label: m.name, type: 'Module' }}});
+export function makeElementsList(g : Map<string,GraphModule>){
+    let elements = Array.from(g.entries()).map<object>((m, i, elements) => { return { data: { id: m[1].name, label: m[1].name, type: 'Module' }}});
 
     let edges = new Map;
 
-    for(let m of g) {
-        for (let from of m.files){
+    for(let m of g.entries()) {
+        for (let from of m[1].files){
             for( let to of from.edge_to){
                 if (from.module != to.module){
                     let data = null;
@@ -86,7 +80,7 @@ export function makeElementsList(g : Set<GraphModule>){
                         data = edges.get(from.module!.name+to.module!.name);
                         data.data.label++;
                     } else {
-                        data = { data: {id: (from.module!.name+to.module!.name), source: m.name, target: to.module!.name, label:1}};
+                        data = { data: {id: (from.module!.name+to.module!.name), source: m[1].name, target: to.module!.name, label:1}};
                     }
                     edges.set(from.module!.name+to.module!.name, data);
                 }
@@ -99,4 +93,27 @@ export function makeElementsList(g : Set<GraphModule>){
     }
 
     return elements;
+}
+
+export function getFilenamesFromEdge(g : Map<string, GraphModule>, source : string, target : string) : Map<string, string[]>{
+    let source_module = g.get(source)!;
+    let target_module = g.get(target)!;
+
+    let files = new Map<string, string[]>();
+
+    for (let f of source_module.files){
+        let lst = [];
+        
+        for (let edge of f.edge_to){
+            if (target_module.files.has(edge)) {
+                lst.push(edge.name);
+            }
+        }
+
+        if(lst.length != 0) {
+            files.set(f.name, lst);
+        }
+    }
+
+    return files;
 }

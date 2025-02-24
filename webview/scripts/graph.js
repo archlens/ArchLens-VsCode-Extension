@@ -46,7 +46,7 @@ function make_graph(elements){
     cy.on('tap', 'edge', function(evt) {
         var edge = evt.target;
         //vscode.postMessage({ command: "edgeClicked", source: edge.source().id(), target: edge.target().id() });
-        vscode.postMessage({command: 'edge_clicked', text: (edge.source().id()+ " -> "+edge.target().id())});
+        vscode.postMessage({command: 'edge_clicked', source: edge.source().id(), target: edge.target().id()});
         
     });
 }

@@ -17,7 +17,15 @@
         "command": "archlens-in-vscode.openGraphView",
         "title": "Open Graph-view"
       }
-    ]
+    ],
+    "views": {
+      "explorer": [
+        {
+          "id": "filesWithDependencyTree",
+          "name": "Dependency Tree"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
