@@ -4,6 +4,7 @@ import * as vscode from 'vscode';
 import { getWebviewContent } from './utilities/getWebviewContent';
 import * as graph_util from "./utilities/graph";
 import * as archlens from './archlens/archLens';
+import * as archlensConfig from './archlens/config';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -32,9 +33,11 @@ export function activate(context: vscode.ExtensionContext) {
             );
             
             const workspaceRootPath = vscode.workspace.workspaceFolders?.[0]?.uri;
+            const internalArchLensConfigPath = vscode.Uri.joinPath(context.extensionUri, "..", "..", "ArchLens", "archlens.json")
 
             const graphPath = vscode.Uri.joinPath(workspaceRootPath!, "/ArchLens/diagrams/modules.json");
             const archLensPath = vscode.Uri.joinPath(workspaceRootPath!, "/ArchLens/src/cli_interface.py");
+            const archLensConfig = await archlensConfig.syncArchLensConfig(workspaceRootPath!, internalArchLensConfigPath);
 
             let g = graph_util.buildGraph(await archlens.getGraphJson(graphPath.toString(), archLensPath.toString()));  
 

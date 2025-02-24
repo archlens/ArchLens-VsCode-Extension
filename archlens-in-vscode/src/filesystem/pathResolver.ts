@@ -12,10 +12,6 @@ export function archLensPath() {
     return vscode.Uri.joinPath(workspaceRootPath!, "/ArchLens/src/cli_interface.py");
 }
 
-function archLensIsSubmodule() {
-
-}
-
 function getWorkspaceRoot() {
     return vscode.workspace.workspaceFolders?.[0]?.uri;
 }
