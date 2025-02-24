@@ -1,27 +1,34 @@
+interface File{
+    name: string
+    path: string
+    edge_to: string[]
+}
+
+interface Module{
+    name: string
+    path: string
+    files: Map <string, File>
+}      
+
 interface Graph {
-    modules: {
-        name: string
-        files: string[]
-    }[]
-    files: {
-        name: string
-        module: string
-        edge_to: string[]
-    }[]
+    src_dir: string
+    modules: Map <string, Module>
 }
 
 class GraphFile {
     constructor (
         public name : string,
+        public path : string,
         public edge_to : Set<GraphFile>,
-        public module : GraphModule | undefined
+        public module : GraphModule
     ) {}
 }
 
 class GraphModule {
-
     constructor (
         public name : string,
+        public fullName : string,
+        public path : string,
         public files : Set<GraphFile>
     ) {}
 }
@@ -29,38 +36,27 @@ class GraphModule {
 export function buildGraph(json :string) : Map<string,GraphModule>{
     const graph : Graph = JSON.parse(json)
     let modules = graph.modules;
-    let files = graph.files;
 
     let parsedModules = new Map<string, GraphModule>();
-
     let parsedFiles = new Map<string, GraphFile>();
 
-    let _filenameToEdges = new Map<String, string[]>();
-
-    for (let f of files){
-        let parsedFile = new GraphFile (f.name, new Set, undefined);
-        parsedFiles.set(f.name, parsedFile);
-        _filenameToEdges.set(f.name, f.edge_to);
+    for (let m of modules.values()) {
+        let fullName = m.path.replace(graph.src_dir,"").replaceAll("/", ".");
+        let parsedModule = new GraphModule (m.name, fullName, m.path, new Set);
+        for (let f of m.files.values()) {
+            let parsedFile = new GraphFile(f.name, f.path, new Set, parsedModule);
+            parsedModule.files.add(parsedFile);
+            parsedFiles.set(f.path, parsedFile);
+        }
+        parsedModules.set(m.path, parsedModule);
     }
 
-    for (let f of files){
-        let k = f.name;
-        let v = parsedFiles.get(k);
-        for(let edge of _filenameToEdges.get(k)!) {
-            v!.edge_to.add(parsedFiles.get(edge)!);
+    for (let m of graph.modules.values()) {
+        for (let f of m.files.values()) {
+            for (let edge of f.edge_to) {
+                parsedFiles.get(f.path)!.edge_to.add(parsedFiles.get(edge)!)
+            }
         }
-        
-        
-    }
-
-    for (let m of modules){
-        let parsedModule = new GraphModule (m.name, new Set);
-        for (let f of m.files) {
-            parsedModule.files.add(parsedFiles.get(f)!);
-            parsedFiles.get(f)!.module = parsedModule;
-        }
-
-        parsedModules.set(m.name, parsedModule);
     }
 
     return parsedModules;
