@@ -35,7 +35,7 @@ export function activate(context: vscode.ExtensionContext) {
             const workspaceRootPath = vscode.workspace.workspaceFolders?.[0]?.uri;
             const internalArchLensConfigPath = vscode.Uri.joinPath(context.extensionUri, "..", "ArchLens", "archlens.json")
 
-            const graphPath = vscode.Uri.joinPath(context.extensionUri, "/ArchLens/diagrams/modules.json");
+            const graphPath = vscode.Uri.joinPath(context.extensionUri, ".." ,"/ArchLens/diagrams/modules.json");
             const archLensPath = vscode.Uri.joinPath(context.extensionUri, "/ArchLens/src/cli_interface.py");
             await archlensConfig.syncArchLensConfig(workspaceRootPath!, internalArchLensConfigPath);
 

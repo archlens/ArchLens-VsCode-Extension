@@ -1,13 +1,13 @@
 import * as file from '../filesystem/fileoperations';
 import * as vs from 'vscode';
 
-export async function syncArchLensConfig(workspaceRoot: vs.Uri, internalArchLensConfigPath: vs.Uri): Promise<string> {
+export async function syncArchLensConfig(workspaceRoot: vs.Uri, internalArchLensConfigPath: vs.Uri): Promise<void> {
     let archLensConfig = await getArchLensConfig(workspaceRoot);
     let rootFolder = archLensConfig['rootFolder']
 
-    archLensConfig['rootFolder'] = vs.Uri.joinPath(workspaceRoot, rootFolder).toString();
+    archLensConfig['rootFolder'] = vs.Uri.joinPath(workspaceRoot, rootFolder).fsPath;
 
-    return archLensConfig.toString();
+    await file.writeJson(internalArchLensConfigPath, archLensConfig);
 }
 
 async function getArchLensConfig(workspaceRoot: vs.Uri) {
