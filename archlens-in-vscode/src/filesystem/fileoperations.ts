@@ -1,13 +1,14 @@
-import * as vscode from 'vscode';
+import * as vs from 'vscode';
 
-export async function readFileAsJSON(path: string): Promise<string> {
-    const fileUri = vscode.Uri.parse(path);
-
+export async function readJSON(path: vs.Uri): Promise<string> {
     try {
-        const uri = vscode.Uri.parse(path);
-        const uint8Array = await vscode.workspace.fs.readFile(uri);
+        const uint8Array = await vs.workspace.fs.readFile(path);
         return new TextDecoder().decode(uint8Array);
     } catch (error) {
-        throw vscode.FileSystemError.FileNotFound(fileUri);
+        throw vs.FileSystemError.FileNotFound(path.toString());
     }
+}
+
+export async function writeJson(path: vs.Uri): Promise<boolean>{
+    return true;
 }

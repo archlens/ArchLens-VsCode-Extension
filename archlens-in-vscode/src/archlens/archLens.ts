@@ -1,8 +1,9 @@
 import { spawn } from 'child_process';
-import { readFileAsJSON } from '../filesystem/fileoperations';
+import * as file from '../filesystem/fileoperations';
+import * as vs from 'vscode';
 
-export async function getGraphJson(graphPath: string, archLensPath: string): Promise<string> {
+export async function getGraphJson(graphPath: vs.Uri, archLensPath: vs.Uri): Promise<string> {
 
-    const graphJson = await readFileAsJSON(graphPath);
+    const graphJson = await file.readJSON(graphPath);
     return graphJson;
 }

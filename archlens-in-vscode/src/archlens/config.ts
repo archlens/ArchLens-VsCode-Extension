@@ -12,7 +12,7 @@ export async function syncArchLensConfig(workspaceRoot: vs.Uri, internalArchLens
 
 async function getArchLensConfig(workspaceRoot: vs.Uri) {
     const archlensConfigPath = vs.Uri.joinPath(workspaceRoot, 'archlens.json')
-    const fileContents = await file.readFileAsJSON(archlensConfigPath.toString());
+    const fileContents = await file.readJSON(archlensConfigPath);
     const archlensConfigJson = JSON.parse(fileContents);
 
     return archlensConfigJson;
