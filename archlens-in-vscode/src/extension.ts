@@ -34,7 +34,7 @@ export function activate(context: vscode.ExtensionContext) {
             const internalArchLensConfigPath = vscode.Uri.joinPath(context.extensionUri, "..", "ArchLens", "archlens.json")
             const graphPath = vscode.Uri.joinPath(context.extensionUri, ".." ,"/ArchLens/diagrams/modules.json");
 
-            let g = graph_util.buildGraph(await archlens.getGraphJson(graphPath, internalArchLensConfigPath));  
+            let g = graph_util.buildGraph(await archlens.getGraphJson(graphPath, internalArchLensConfigPath, context.extensionUri));  
 
             panel.webview.html = getWebviewContent(panel.webview, context.extensionUri);
 
