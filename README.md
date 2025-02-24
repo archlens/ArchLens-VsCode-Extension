@@ -14,10 +14,12 @@ documentation to read more.
 
 #### Set up Python environment
 
-Set up your python virtual environment
+Set up your python virtual environment in ArchLens
+
+
 
 ```shell
-
+cd ArchLens
 python3 -m venv .venv
 ```
 
@@ -32,8 +34,8 @@ To start your virtual environment
 
 ```shell
 
-pip install -r ./ArchLens/requirements.txt
-pip install -r ./ArchLens/dev-requirements.txt
+pip install -r requirements.txt
+pip install -r dev-requirements.txt
 ```
 
 If you do not have `setuptools` installed, you should install
@@ -48,7 +50,7 @@ pip install setuptools
 
 ```shell
 
-python ./ArchLens/setup.py develop
+python setup.py develop
 ```
 
 Now you are ready to use ArchLens!
