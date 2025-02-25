@@ -1,3 +1,4 @@
 [submodule "ArchLens"]
 	path = ArchLens
 	url = git@github.com:archlens/ArchLens.git
+	ignore = all
