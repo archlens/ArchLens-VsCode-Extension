@@ -23,11 +23,15 @@ cd ArchLens
 python3 -m venv .venv
 ```
 
-To start your virtual environment
+To start your virtual environment in linux use the command:
 
 ```shell
 
 . .venv/bin/activate
+```
+To start your virtual environment in windows use the command:
+```shell
+cd .venv/Scripts && activate && cd ../../
 ```
 
 #### Install dependencies
