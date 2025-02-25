@@ -6,6 +6,7 @@ interface File{
 
 interface Module{
     name: string
+    full_name: string
     path: string
     files: Map <string, File>
 }      
@@ -34,25 +35,26 @@ class GraphModule {
 }
 
 export function buildGraph(json :string) : Map<string,GraphModule>{
-    const graph : Graph = JSON.parse(json)
-    let modules = graph.modules;
+    const graph : Graph = JSON.parse(json);
+    let modules = new Map<string, Module>(Object.entries(graph.modules));
 
     let parsedModules = new Map<string, GraphModule>();
     let parsedFiles = new Map<string, GraphFile>();
 
     for (let m of modules.values()) {
-        let fullName = m.path.replace(graph.src_dir,"").replaceAll("/", ".");
-        let parsedModule = new GraphModule (m.name, fullName, m.path, new Set);
-        for (let f of m.files.values()) {
+        let parsedModule = new GraphModule (m.name, m.full_name, m.path, new Set);
+        let files = new Map <string, File>(Object.entries(m.files));
+        for (let f of files.values()) {
             let parsedFile = new GraphFile(f.name, f.path, new Set, parsedModule);
             parsedModule.files.add(parsedFile);
             parsedFiles.set(f.path, parsedFile);
         }
-        parsedModules.set(m.path, parsedModule);
+        parsedModules.set(m.full_name, parsedModule);
     }
 
-    for (let m of graph.modules.values()) {
-        for (let f of m.files.values()) {
+    for (let m of modules.values()) {
+        let files = new Map <string, File>(Object.entries(m.files))
+        for (let f of files.values()) {
             for (let edge of f.edge_to) {
                 parsedFiles.get(f.path)!.edge_to.add(parsedFiles.get(edge)!)
             }
@@ -63,7 +65,7 @@ export function buildGraph(json :string) : Map<string,GraphModule>{
 }
 
 export function makeElementsList(g : Map<string,GraphModule>){
-    let elements = Array.from(g.entries()).map<object>((m, i, elements) => { return { data: { id: m[1].name, label: m[1].name, type: 'Module' }}});
+    let elements = Array.from(g.entries()).map<object>((m, i, elements) => { return { data: { id: m[1].fullName, label: m[1].fullName, type: 'Module' }}});
 
     let edges = new Map;
 
@@ -72,13 +74,13 @@ export function makeElementsList(g : Map<string,GraphModule>){
             for( let to of from.edge_to){
                 if (from.module != to.module){
                     let data = null;
-                    if(edges.has(from.module!.name+to.module!.name)){
-                        data = edges.get(from.module!.name+to.module!.name);
+                    if(edges.has(from.module!.fullName+to.module!.fullName)){
+                        data = edges.get(from.module!.fullName+to.module!.fullName);
                         data.data.label++;
                     } else {
-                        data = { data: {id: (from.module!.name+to.module!.name), source: m[1].name, target: to.module!.name, label:1}};
+                        data = { data: {id: (from.module!.fullName+to.module!.fullName), source: m[1].fullName, target: to.module!.fullName, label:1}};
                     }
-                    edges.set(from.module!.name+to.module!.name, data);
+                    edges.set(from.module!.fullName+to.module!.fullName, data);
                 }
             }
         }
