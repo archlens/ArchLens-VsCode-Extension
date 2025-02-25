@@ -2,7 +2,7 @@ import { spawn } from 'child_process';
 import * as file from '../filesystem/fileoperations';
 import * as archlensConfig from './config';
 import * as vs from 'vscode';
-import { arch } from 'os';
+import os from 'os';
 
 export async function getGraphJson(graphPath: vs.Uri, archLensConfigPath: vs.Uri, extensionPath: vs.Uri): Promise<string> {
     const workspaceRootPath = vs.workspace.workspaceFolders?.[0]?.uri;
@@ -10,7 +10,8 @@ export async function getGraphJson(graphPath: vs.Uri, archLensConfigPath: vs.Uri
     await archlensConfig.syncArchLensConfig(workspaceRootPath!, archLensConfigPath);
 
     const archLensPath = vs.Uri.joinPath(extensionPath, '..', 'ArchLens').fsPath
-    const pythonPath = '.venv/bin/python'
+    const isWindows = process.platform === "win32"
+    const pythonPath = isWindows ? '.venv/Scripts/python.exe' : '.venv/bin/python'
     const scriptPath = './src/cli_interface.py'
 
     await new Promise<void>((resolve, reject) => {
