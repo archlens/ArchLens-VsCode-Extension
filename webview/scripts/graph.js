@@ -1,4 +1,3 @@
-import cytoscape from "../node_modules/cytoscape/dist/cytoscape.esm.mjs";
 const vscode = acquireVsCodeApi();
 
 function make_graph(elements){
@@ -6,6 +5,12 @@ function make_graph(elements){
     const block_extra_length = 50;
     const font_width = font_height*.61; // Approx
     const border_width = 2;
+
+    let options = {
+        fit: true,
+        padding: 500,
+        idealEdgeLength: 1000
+    } 
 
     var cy = cytoscape({
         container: document.getElementById('graph'),
@@ -38,9 +43,15 @@ function make_graph(elements){
             }},
 
         ],
-        layout: { name: 'grid' }
+        layout: {
+            name: "cose-bilkent",
+            fit: true,
+            idealEdgeLength: 200
+        },
+        
     });
 
+    cy.layout().run()
 
     // Add a click event to edges
     cy.on('tap', 'edge', function(evt) {
