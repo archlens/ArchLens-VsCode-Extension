@@ -35,19 +35,20 @@ export function activate(context: vscode.ExtensionContext) {
             const internalArchLensConfigPath = vscode.Uri.joinPath(context.extensionUri, "..", "ArchLens", "archlens.json")
             const graphPath = vscode.Uri.joinPath(context.extensionUri, ".." ,"/ArchLens/diagrams/modules.json");
 
-            let g = graph_util.buildGraph(await archlens.getGraphJson(graphPath, internalArchLensConfigPath, context.extensionUri));  
-
             panel.webview.html = getWebviewContent(panel.webview, context.extensionUri);
+
+            let g : Map<string, any> | undefined = undefined;
 
             // Handle messages from the webview
             panel.webview.onDidReceiveMessage(
-                message => {
+                async message => {
                 switch (message.command) {
                     case 'edge_clicked':
-                        const files = graph_util.getFilenamesFromEdge(g, message.source, message.target);
+                        const files = graph_util.getFilenamesFromEdge(g!, message.source, message.target);
                         showTreeView(context, files);
                         return;
                     case 'get_graph':
+                        g = graph_util.buildGraph(await archlens.getGraphJson(graphPath, internalArchLensConfigPath, context.extensionUri));  
                         panel.webview.postMessage({ command: "update_graph",
                             graph:  graph_util.makeElementsList(g)
                         })
@@ -57,6 +58,16 @@ export function activate(context: vscode.ExtensionContext) {
                 undefined,
                 context.subscriptions
             );  
+
+            let disposable = vscode.workspace.onDidSaveTextDocument(async (_) => {
+                g = graph_util.buildGraph(await archlens.getGraphJson(graphPath, internalArchLensConfigPath, context.extensionUri));  
+                panel.webview.postMessage({ command: "update_graph",
+                    graph:  graph_util.makeElementsList(g!)
+                })
+            });
+        
+            context.subscriptions.push(disposable);
+
         })
     );
 

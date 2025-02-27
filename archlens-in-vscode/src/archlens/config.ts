@@ -6,6 +6,7 @@ export async function syncArchLensConfig(workspaceRoot: vs.Uri, internalArchLens
     let rootFolder = archLensConfig['rootFolder']
 
     archLensConfig['rootFolder'] = vs.Uri.joinPath(workspaceRoot, rootFolder).fsPath;
+    archLensConfig['_alternative_target_root'] = vs.Uri.joinPath(workspaceRoot).fsPath
 
     await file.writeJson(internalArchLensConfigPath, archLensConfig);
 }
