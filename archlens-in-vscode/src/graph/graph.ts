@@ -40,27 +40,28 @@ class GraphModule {
 
 export function buildGraph(json :string) : Map<string,GraphModule>{
     const graph : Graph = JSON.parse(json);
-    let modules = new Map<string, Module>(Object.entries(graph.modules));
+    const modules = new Map<string, Module>(Object.entries(graph.modules));
 
-    let parsedModules = new Map<string, GraphModule>();
-    let parsedFiles = new Map<string, GraphFile>();
+    const parsedModules = new Map<string, GraphModule>();
+    const parsedFiles = new Map<string, GraphFile>();
 
-    for (let m of modules.values()) {
-        let parsedModule = new GraphModule (m.name, m.full_name, m.path);
-        let files = new Map <string, File>(Object.entries(m.files));
-        for (let f of files.values()) {
-            let parsedFile = new GraphFile(f.name, f.path, parsedModule);
+    for (let [name, module] of Object.entries(graph.modules)) {
+        let parsedModule = new GraphModule (module.name, module.full_name, module.path);
+
+        for (let [fileName, file] of Object.entries(module.files as Record<string, File>)) {
+            let parsedFile = new GraphFile(file.name, file.path, parsedModule);
+
             parsedModule.files.add(parsedFile);
-            parsedFiles.set(f.path, parsedFile);
+            parsedFiles.set(file.path, parsedFile);
         }
-        parsedModules.set(m.full_name, parsedModule);
+
+        parsedModules.set(module.full_name, parsedModule);
     }
 
-    for (let m of modules.values()) {
-        let files = new Map <string, File>(Object.entries(m.files))
-        for (let f of files.values()) {
-            for (let edge of f.edge_to) {
-                parsedFiles.get(f.path)!.edge_to.add(parsedFiles.get(edge)!)
+    for (let module of modules.values()) {
+        for (let [name, file] of Object.entries(module.files)) {
+            for (let edge of file.edge_to) {
+                parsedFiles.get(file.path)!.edge_to.add(parsedFiles.get(edge)!)
             }
         }
     }
