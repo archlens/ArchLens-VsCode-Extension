@@ -14,12 +14,6 @@ function make_graph(elements){
     const font_width = font_height*.61; // Approx
     const border_width = 2;
 
-    let options = {
-        fit: true,
-        padding: 500,
-        idealEdgeLength: 1000
-    }
-
     const cy = cytoscape({
         container: document.getElementById('graph'),
         elements: elements,
@@ -72,11 +66,10 @@ function make_graph(elements){
     });
 
     cy.run()
-    
+
     // Add a click event to edges
     cy.on('tap', 'edge', function(evt) {
         var edge = evt.target;
-        //vscode.postMessage({ command: "edgeClicked", source: edge.source().id(), target: edge.target().id() });
         vscode.postMessage({command: 'edge_clicked', source: edge.source().id(), target: edge.target().id()});
         
     });
