@@ -40,8 +40,6 @@ class GraphModule {
 
 export function buildGraph(json :string) : Map<string,GraphModule>{
     const graph : Graph = JSON.parse(json);
-    const modules = new Map<string, Module>(Object.entries(graph.modules));
-
     const parsedModules = new Map<string, GraphModule>();
     const parsedFiles = new Map<string, GraphFile>();
 
@@ -58,8 +56,8 @@ export function buildGraph(json :string) : Map<string,GraphModule>{
         parsedModules.set(module.full_name, parsedModule);
     }
 
-    for (let module of modules.values()) {
-        for (let [name, file] of Object.entries(module.files)) {
+    for (let [name, module] of Object.entries(graph.modules)) {
+        for (let [fileName, file] of Object.entries(module.files as Record<string, File>)) {
             for (let edge of file.edge_to) {
                 parsedFiles.get(file.path)!.edge_to.add(parsedFiles.get(edge)!)
             }
