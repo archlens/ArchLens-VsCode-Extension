@@ -17,12 +17,6 @@ export async function getGraphJson(graphPath: vs.Uri, extensionPath: vs.Uri): Pr
         const archLensProcess = spawn(pythonPath, [scriptPath, 'jsonfile', "--config-path=" + archLensConfigPath], {
             cwd: archLensPath
         });
-        
-        // Add logging to debug
-        console.log('Python Path:', pythonPath);
-        console.log('Script Path:', scriptPath);
-        console.log('Config Path:', archLensConfigPath);
-        console.log('Working Directory:', archLensPath);
 
         // Consider adding stderr and stdout handlers to see error messages
         archLensProcess.stderr.on('data', (data) => {

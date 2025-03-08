@@ -17,20 +17,24 @@ interface Graph {
 }
 
 class GraphFile {
+
+    public edge_to : Set<GraphFile> = new Set<GraphFile>
+
     constructor (
         public name : string,
         public path : string,
-        public edge_to : Set<GraphFile>,
         public module : GraphModule
     ) {}
 }
 
 class GraphModule {
+
+    public files : Set<GraphFile> = new Set<GraphFile>
+
     constructor (
         public name : string,
         public fullName : string,
         public path : string,
-        public files : Set<GraphFile>
     ) {}
 }
 
@@ -42,10 +46,10 @@ export function buildGraph(json :string) : Map<string,GraphModule>{
     let parsedFiles = new Map<string, GraphFile>();
 
     for (let m of modules.values()) {
-        let parsedModule = new GraphModule (m.name, m.full_name, m.path, new Set);
+        let parsedModule = new GraphModule (m.name, m.full_name, m.path);
         let files = new Map <string, File>(Object.entries(m.files));
         for (let f of files.values()) {
-            let parsedFile = new GraphFile(f.name, f.path, new Set, parsedModule);
+            let parsedFile = new GraphFile(f.name, f.path, parsedModule);
             parsedModule.files.add(parsedFile);
             parsedFiles.set(f.path, parsedFile);
         }
