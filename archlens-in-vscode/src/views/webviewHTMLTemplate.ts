@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 
-export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.Uri): string {
+export function WebviewHTMLTemplate(webview: vscode.Webview, extensionUri: vscode.Uri): string {
     const indexPath = vscode.Uri.joinPath(extensionUri, '..' ,'webview','index.html');
 
     let html = fs.readFileSync(indexPath.fsPath, 'utf8');

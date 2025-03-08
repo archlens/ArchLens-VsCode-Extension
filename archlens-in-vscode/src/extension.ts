@@ -1,9 +1,9 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import { getWebviewContent } from './utilities/getWebviewContent';
+import { WebviewHTMLTemplate } from './views/webviewHTMLTemplate';
 import * as graph_util from "./graph/graph";
-import { showTreeView } from './utilities/treeView';
+import { showTreeView } from './views/FileTreeView';
 import * as archlens from './archlens/archLens';
 
 // This method is called when your extension is activated
@@ -35,7 +35,7 @@ export function activate(context: vscode.ExtensionContext) {
             const internalArchLensConfigPath = vscode.Uri.joinPath(context.extensionUri, "..", "ArchLens", "archlens.json")
             const graphPath = vscode.Uri.joinPath(context.extensionUri, ".." ,"/ArchLens/diagrams/modules.json");
 
-            panel.webview.html = getWebviewContent(panel.webview, context.extensionUri);
+            panel.webview.html = WebviewHTMLTemplate(panel.webview, context.extensionUri);
 
             let g : Map<string, any> | undefined = undefined;
 
