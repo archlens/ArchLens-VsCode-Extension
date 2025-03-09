@@ -1,20 +1,22 @@
-import { spawn } from 'child_process';
+import {spawn} from 'child_process';
 import * as file from '../filesystem/fileoperations';
 import * as vs from 'vscode';
-import os from 'os';
+import * as path from '../filesystem/pathResolver';
 
 export async function getGraphJson(graphPath: vs.Uri, extensionPath: vs.Uri): Promise<string> {
-    const workspaceRootPath = vs.workspace.workspaceFolders?.[0]?.uri;
+    await spawnArchLens(extensionPath)
 
-    const archLensConfigPath = vs.Uri.joinPath(workspaceRootPath!, "archlens.json").fsPath;
-    const archLensPath = vs.Uri.joinPath(extensionPath, '..', 'ArchLens').fsPath
-    const isWindows = process.platform === "win32"
-    const pythonPath = isWindows ? '.venv/Scripts/python.exe' : '.venv/bin/python'
-    const scriptPath = './src/cli_interface.py'
+    return await file.readJSON(graphPath);
+}
 
-    await new Promise<void>((resolve, reject) => {
-        const archLensProcess = spawn(pythonPath, [scriptPath, 'jsonfile', "--config-path=" + archLensConfigPath], {
-            cwd: archLensPath
+async function spawnArchLens(extensionPath : vs.Uri): Promise<void> {
+    return new Promise((resolve, reject) => {
+        const archLensProcess = spawn(path.Python, [
+            path.ArchLensScript,
+            'jsonfile',
+            "--config-path=" + path.ArchLensConfig.fsPath
+        ], {
+            cwd: path.ArchLens(extensionPath).fsPath
         });
 
         // Consider adding stderr and stdout handlers to see error messages
@@ -38,7 +40,4 @@ export async function getGraphJson(graphPath: vs.Uri, extensionPath: vs.Uri): Pr
             }
         });
     });
-
-    const graphJson = await file.readJSON(graphPath);
-    return graphJson;
 }
