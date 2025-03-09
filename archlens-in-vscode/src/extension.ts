@@ -2,10 +2,11 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import { WebviewHTMLTemplate } from './views/webviewHTMLTemplate';
-import * as graph_util from "./graph/graph";
+import * as graph_util from "./graph/graphGeneration";
 import { showTreeView } from './views/FileTreeView';
 import * as archlens from './archlens/archLens';
 import * as path from './filesystem/pathResolver';
+import {Graph} from "./graph/graph";
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -35,14 +36,14 @@ export function activate(context: vscode.ExtensionContext) {
 
             panel.webview.html = WebviewHTMLTemplate(panel.webview, context.extensionUri);
 
-            let g : Map<string, any> | undefined = undefined;
+            let g : Graph | undefined = undefined;
 
             // Handle messages from the webview
             panel.webview.onDidReceiveMessage(
                 async message => {
                 switch (message.command) {
                     case 'edge_clicked':
-                        const files = graph_util.getFilenamesFromEdge(g!, message.source, message.target);
+                        const files = g!.getFilenamesFromEdge(message.source, message.target);
                         showTreeView(context, files);
                         return;
                     case 'get_graph':
@@ -59,6 +60,7 @@ export function activate(context: vscode.ExtensionContext) {
 
             let disposable = vscode.workspace.onDidSaveTextDocument(async (_) => {
                 g = graph_util.buildGraph(await archlens.getGraphJson(path.GraphJson, context.extensionUri));
+
                 panel.webview.postMessage({ command: "update_graph",
                     graph:  graph_util.makeElementsList(g!)
                 })
