@@ -29,22 +29,19 @@ export class Graph {
     }
 
     getFilenamesFromEdge(source : string, target : string) : Map<string, string[]>{
-        let source_module = this.getModule(source)!;
-        let target_module = this.getModule(target)!;
+        let sourceModule = this.getModule(source)!;
+        let targetModule = this.getModule(target)!;
 
         let files = new Map<string, string[]>();
 
-        for (let f of source_module.files){
-            let lst = [];
+        for (let sourceFile of sourceModule.files){
 
-            for (let edge of f.edge_to){
-                if (target_module.files.has(edge)) {
-                    lst.push(edge.name);
-                }
-            }
+            const targetEdges = Array.from(sourceFile.edge_to)
+                .filter(edge => targetModule.files.has(edge))
+                .map(edge => edge.name);
 
-            if(lst.length != 0) {
-                files.set(f.name, lst);
+            if (targetEdges.length > 0) {
+                files.set(sourceFile.name, targetEdges);
             }
         }
 
