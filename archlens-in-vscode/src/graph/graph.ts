@@ -8,7 +8,7 @@ export class Graph {
     constructor() {
     }
 
-    getModules() {
+    getModules() : Map<string, GraphModule> {
         return this.modules;
     }
 
