@@ -5,6 +5,7 @@ import { WebviewHTMLTemplate } from './views/webviewHTMLTemplate';
 import * as graph_util from "./graph/graph";
 import { showTreeView } from './views/FileTreeView';
 import * as archlens from './archlens/archLens';
+import * as path from './filesystem/pathResolver';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -31,10 +32,6 @@ export function activate(context: vscode.ExtensionContext) {
                                         ]
                 }
             );
-            
-            const workspaceRootPath = vscode.workspace.workspaceFolders?.[0]?.uri;
-        
-            const graphPath = vscode.Uri.joinPath(workspaceRootPath!, "./diagrams/modules.json");
 
             panel.webview.html = WebviewHTMLTemplate(panel.webview, context.extensionUri);
 
@@ -49,7 +46,7 @@ export function activate(context: vscode.ExtensionContext) {
                         showTreeView(context, files);
                         return;
                     case 'get_graph':
-                        g = graph_util.buildGraph(await archlens.getGraphJson(graphPath, context.extensionUri));  
+                        g = graph_util.buildGraph(await archlens.getGraphJson(path.GraphJson, context.extensionUri));
                         panel.webview.postMessage({ command: "update_graph",
                             graph:  graph_util.makeElementsList(g)
                         })
@@ -61,7 +58,7 @@ export function activate(context: vscode.ExtensionContext) {
             );  
 
             let disposable = vscode.workspace.onDidSaveTextDocument(async (_) => {
-                g = graph_util.buildGraph(await archlens.getGraphJson(graphPath, context.extensionUri));  
+                g = graph_util.buildGraph(await archlens.getGraphJson(path.GraphJson, context.extensionUri));
                 panel.webview.postMessage({ command: "update_graph",
                     graph:  graph_util.makeElementsList(g!)
                 })

@@ -38,7 +38,7 @@ class GraphModule {
     ) {}
 }
 
-export function buildGraph(json :string) : Map<string,GraphModule>{
+export function buildGraph(json :string) : Map<string, GraphModule>{
     const graph : Graph = JSON.parse(json);
     const parsedModules = new Map<string, GraphModule>();
     const parsedFiles = new Map<string, GraphFile>();

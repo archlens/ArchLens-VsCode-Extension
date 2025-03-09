@@ -1,6 +1,5 @@
 import { spawn } from 'child_process';
 import * as file from '../filesystem/fileoperations';
-import * as archlensConfig from './config';
 import * as vs from 'vscode';
 import os from 'os';
 
