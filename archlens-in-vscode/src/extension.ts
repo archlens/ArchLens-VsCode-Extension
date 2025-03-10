@@ -49,7 +49,7 @@ export function activate(context: vscode.ExtensionContext) {
                     case 'get_graph':
                         g = graph_util.buildGraph(await archlens.getGraphJson(path.GraphJson, context.extensionUri));
                         panel.webview.postMessage({ command: "update_graph",
-                            graph:  graph_util.makeElementsList(g)
+                            graph:  g.toList()                        
                         })
                         return;
                 }
@@ -62,7 +62,7 @@ export function activate(context: vscode.ExtensionContext) {
                 g = graph_util.buildGraph(await archlens.getGraphJson(path.GraphJson, context.extensionUri));
 
                 panel.webview.postMessage({ command: "update_graph",
-                    graph:  graph_util.makeElementsList(g!)
+                    graph:  g!.toList()
                 })
             });
         

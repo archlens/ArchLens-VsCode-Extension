@@ -29,32 +29,3 @@ export function buildGraph(json :string) : Graph {
 
     return graph;
 }
-
-export function makeElementsList(g : Graph){
-    let elements = Array.from(g.getModules()).map<object>((m, i, elements) => { return { data: { id: m[1].fullName, label: m[1].fullName, type: 'Module' }}});
-
-    let edges = new Map;
-
-    for(let m of g.getModules()) {
-        for (let from of m[1].files){
-            for( let to of from.edge_to){
-                if (from.module != to.module){
-                    let data = null;
-                    if(edges.has(from.module!.fullName+to.module!.fullName)){
-                        data = edges.get(from.module!.fullName+to.module!.fullName);
-                        data.data.label++;
-                    } else {
-                        data = { data: {id: (from.module!.fullName+to.module!.fullName), source: m[1].fullName, target: to.module!.fullName, label:1}};
-                    }
-                    edges.set(from.module!.fullName+to.module!.fullName, data);
-                }
-            }
-        }
-    }
-
-    for (let [key, data] of edges){
-        elements.push(data);
-    }
-
-    return elements;
-}

@@ -8,10 +8,6 @@ export class Graph {
     constructor() {
     }
 
-    getModules() : Map<string, GraphModule> {
-        return this.modules;
-    }
-
     getModule(name : string) : GraphModule | undefined {
         return this.modules.get(name);
     }
@@ -46,6 +42,39 @@ export class Graph {
         }
 
         return files;
+    }
+
+    toList(){
+        let elements = Array.from(this.modules).map<object>((m, i, elements) => { return { data: { id: m[1].fullName, label: m[1].fullName, type: 'Module' }}});
+    
+        let edges = new Map;
+    
+        for(let m of this.modules) {
+            for (let from of m[1].files){
+                for( let to of from.edge_to){
+                    if(from.module == to.module) {
+                        continue;
+                    }
+
+                    let label = null;
+                    let fullEdgeName = from.module!.fullName+to.module!.fullName;
+
+                    if(edges.has(fullEdgeName)){
+                        label = edges.get(fullEdgeName);
+                        label.data.label++;
+                    } else {
+                        label = { data: {id: (fullEdgeName), source: m[1].fullName, target: to.module!.fullName, label:1}};
+                    }
+                    edges.set(fullEdgeName, label);
+                }
+            }
+        }
+    
+        for (let [key, data] of edges){
+            elements.push(data);
+        }
+    
+        return elements;
     }
 }
 
