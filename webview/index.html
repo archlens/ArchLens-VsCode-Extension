@@ -8,10 +8,10 @@
     <link rel="stylesheet" href="{baseUri}/styles/app.css">
 </head>
 <body>
-    <header style="width: 100%; height: 40px; background-color: rgba(0, 0, 0, 0.6);">
-        <div>
+    <header>
+        <div class="select-wrapper">
             <label>
-
+                View:
             </label>
             <select id="#view-selector">
                 <option>Module.json</option>
@@ -19,6 +19,6 @@
             </select>
         </div>
     </header>
-    <div id="graph" style="width: 100%; height: 100%; border: 1px solid black; background-color: grey;"></div>
+    <div id="graph"></div>
     <script type="module" src="{baseUri}/scripts/graph.js"></script>
 </body>
