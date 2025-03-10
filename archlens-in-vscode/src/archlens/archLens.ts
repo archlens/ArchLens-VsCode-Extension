@@ -1,24 +1,33 @@
-import { spawn } from 'child_process';
+import {spawn} from 'child_process';
 import * as file from '../filesystem/fileoperations';
-import * as archlensConfig from './config';
 import * as vs from 'vscode';
-import os from 'os';
+import * as path from '../filesystem/pathResolver';
 
-export async function getGraphJson(graphPath: vs.Uri, archLensConfigPath: vs.Uri, extensionPath: vs.Uri): Promise<string> {
-    const workspaceRootPath = vs.workspace.workspaceFolders?.[0]?.uri;
+export async function getGraphJson(graphPath: vs.Uri, extensionPath: vs.Uri): Promise<string> {
+    await spawnArchLens(extensionPath)
 
-    await archlensConfig.syncArchLensConfig(workspaceRootPath!, archLensConfigPath);
+    return await file.readJSON(graphPath);
+}
 
-    const archLensPath = vs.Uri.joinPath(extensionPath, '..', 'ArchLens').fsPath
-    const isWindows = process.platform === "win32"
-    const pythonPath = isWindows ? '.venv/Scripts/python.exe' : '.venv/bin/python'
-    const scriptPath = './src/cli_interface.py'
-
-    await new Promise<void>((resolve, reject) => {
-        const archLensProcess = spawn(pythonPath, [scriptPath, 'jsonfile'], {
-            cwd: archLensPath
+async function spawnArchLens(extensionPath : vs.Uri): Promise<void> {
+    return new Promise((resolve, reject) => {
+        const archLensProcess = spawn(path.Python, [
+            path.ArchLensScript,
+            'jsonfile',
+            "--config-path=" + path.ArchLensConfig.fsPath
+        ], {
+            cwd: path.ArchLens(extensionPath).fsPath
         });
-        
+
+        // Consider adding stderr and stdout handlers to see error messages
+        archLensProcess.stderr.on('data', (data) => {
+            console.error(`stderr: ${data}`);
+        });
+
+        archLensProcess.stdout.on('data', (data) => {
+            console.log(`stdout: ${data}`);
+        });
+
         archLensProcess.on('error', (error) => {
             reject(error);
         });
@@ -31,7 +40,4 @@ export async function getGraphJson(graphPath: vs.Uri, archLensConfigPath: vs.Uri
             }
         });
     });
-
-    const graphJson = await file.readJSON(graphPath);
-    return graphJson;
 }

@@ -1,10 +1,12 @@
 import * as vscode from 'vscode';
 
 class TreeDataProvider implements vscode.TreeDataProvider<string> {
-    
-    constructor(
-        private data: Map<string, string[]>
-    ){}
+
+    private data: Map<string, string[]>
+
+    constructor(data: Map<string, string[]>){
+        this.data = data;
+    }
 
     getTreeItem(element: string): vscode.TreeItem {
         const hasChildren = this.data.has(element);
