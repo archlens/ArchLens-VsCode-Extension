@@ -3,6 +3,7 @@ const vscode = acquireVsCodeApi();
 const viewSelect = document.getElementById('view-selector');
 
 viewSelect.addEventListener('input', (event) => {
+
     console.log(event.target.value);
 })
 
@@ -17,7 +18,7 @@ function update_views(views) {
         return option;
     });
 
-    viewSelect.replaceChildren(viewOptions);
+    viewSelect.replaceChildren(...viewOptions);
 }
 
 function getLabelLength(node){
@@ -102,8 +103,10 @@ window.addEventListener('message', event => {
     switch (message.command){
         case 'update_graph':
             make_graph(message.graph);
+            break;
         case 'update_views':
             update_views(message.views);
+            break;
     }
 });
 

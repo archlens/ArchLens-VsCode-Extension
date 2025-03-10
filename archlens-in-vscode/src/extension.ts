@@ -55,11 +55,10 @@ export function activate(context: vscode.ExtensionContext) {
                         })
                         return;
                     case 'get_views':
-                        let views = { views: [
+                        let views = [
                             { name: "module.json" }, 
                             { name: "something.json" } 
-                            ] 
-                        };
+                        ];
                         panel.webview.postMessage({ command: "update_views",
                             views: views
                         })
