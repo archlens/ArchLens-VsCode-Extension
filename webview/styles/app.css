@@ -1,0 +1,5 @@
+body {
+    width: calc(100vw - 40px); 
+    height: calc(100vh - 80px); 
+    padding-top: 20px;
+}
