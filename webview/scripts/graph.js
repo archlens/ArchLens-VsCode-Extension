@@ -58,14 +58,15 @@ function make_graph(elements){
             },
 
         ],
-        layout: {
-            name: "cose-bilkent",
-            fit: true,
-            idealEdgeLength: 200
-        },
     });
 
-    cy.run()
+    const layout = {
+        name: "cose-bilkent",
+        fit: true,
+        idealEdgeLength: 200
+    }
+
+    cy.layout(layout).run()
 
     // Add a click event to edges
     cy.on('tap', 'edge', function(evt) {
