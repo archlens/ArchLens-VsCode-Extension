@@ -22,7 +22,15 @@ export function buildGraph(json :string) : Graph {
     for (let [name, module] of Object.entries(moduleMap.modules)) {
         for (let [fileName, file] of Object.entries(module.files as Record<string, File>)) {
             for (let edge of file.edge_to) {
-                graph.getFile(file.path)!.edge_to.add(graph.getFile(edge)!)
+
+                let fromFile = graph.getFile(file.path);
+                let toFile = graph.getFile(edge)
+
+                if(fromFile == undefined || toFile == undefined) {
+                    continue;
+                }
+
+                fromFile.edge_to.add(toFile);
             }
         }
     }

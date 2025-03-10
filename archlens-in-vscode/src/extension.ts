@@ -36,7 +36,7 @@ export function activate(context: vscode.ExtensionContext) {
 
             panel.webview.html = WebviewHTMLTemplate(panel.webview, context.extensionUri);
 
-            let g : Graph | undefined = undefined;
+            let g : Graph = new Graph();
 
             // Handle messages from the webview
             panel.webview.onDidReceiveMessage(

@@ -2,7 +2,7 @@
 
 export class Graph {
 
-    private modules : Map<string, GraphModule> = new Map<string, GraphModule>();
+    private modules : Map<string, GraphModule> =    new Map<string, GraphModule>();
     private files : Map<string, GraphFile> = new Map<string, GraphFile>();
 
     constructor() {
@@ -49,24 +49,22 @@ export class Graph {
     
         let edges = new Map;
     
-        for(let m of this.modules) {
-            for (let from of m[1].files){
-                for( let to of from.edge_to){
-                    if(from.module == to.module) {
-                        continue;
-                    }
-
-                    let label = null;
-                    let fullEdgeName = from.module!.fullName+to.module!.fullName;
-
-                    if(edges.has(fullEdgeName)){
-                        label = edges.get(fullEdgeName);
-                        label.data.label++;
-                    } else {
-                        label = { data: {id: (fullEdgeName), source: m[1].fullName, target: to.module!.fullName, label:1}};
-                    }
-                    edges.set(fullEdgeName, label);
+        for (let [name, from] of this.files){
+            for( let to of from.edge_to){
+                if(from.module == to.module) {
+                    continue;
                 }
+
+                let label = null;
+                let fullEdgeName = from.module!.fullName+to.module!.fullName;
+
+                if(edges.has(fullEdgeName)){
+                    label = edges.get(fullEdgeName);
+                    label.data.label++;
+                } else {
+                    label = { data: {id: (fullEdgeName), source: from.module.fullName, target: to.module!.fullName, label:1 }};
+                }
+                edges.set(fullEdgeName, label);
             }
         }
     
