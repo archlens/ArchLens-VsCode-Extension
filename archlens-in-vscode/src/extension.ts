@@ -54,6 +54,15 @@ export function activate(context: vscode.ExtensionContext) {
                             graph:  g.toList()                        
                         })
                         return;
+                    case 'get_views':
+                        let views = { views: [
+                            { name: "module.json" }, 
+                            { name: "something.json" } 
+                            ] 
+                        };
+                        panel.webview.postMessage({ command: "update_views",
+                            views: views
+                        })
                 }
                 },
                 undefined,

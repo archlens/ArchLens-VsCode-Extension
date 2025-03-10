@@ -1,5 +1,25 @@
 const vscode = acquireVsCodeApi();
 
+const viewSelect = document.getElementById('view-selector');
+
+viewSelect.addEventListener('input', (event) => {
+    console.log(event.target.value);
+})
+
+function update_views(views) {
+    const viewOptions = views.map(
+        element => {
+        let option = document.createElement('option')
+
+        option.setAttribute('value', element.name)
+        option.innerHTML = element.name;
+
+        return option;
+    });
+
+    viewSelect.replaceChildren(viewOptions);
+}
+
 function getLabelLength(node){
     if (node.data('label')) {
         return node.data('label').length
@@ -82,7 +102,10 @@ window.addEventListener('message', event => {
     switch (message.command){
         case 'update_graph':
             make_graph(message.graph);
+        case 'update_views':
+            update_views(message.views);
     }
 });
 
+vscode.postMessage({command: 'get_views'})
 vscode.postMessage({command: 'get_graph'});
