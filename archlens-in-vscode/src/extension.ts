@@ -7,6 +7,7 @@ import { showTreeView } from './views/FileTreeView';
 import * as archlens from './archlens/archLens';
 import * as path from './filesystem/pathResolver';
 import {Graph} from "./graph/graph";
+import { arch } from 'os';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -47,21 +48,14 @@ export function activate(context: vscode.ExtensionContext) {
                     case 'edge_clicked':
                         const files = g!.getFilenamesFromEdge(message.source, message.target);
                         showTreeView(context, files);
-                        return;
+                        break;
                     case 'get_graph':
-                        g = graph_util.buildGraph(await archlens.getGraphJson(path.GraphJson, context.extensionUri));
-                        panel.webview.postMessage({ command: "update_graph",
-                            graph:  g.toList()                        
-                        })
-                        return;
+                    case 'get_view':
+                        g = await updateGraph(message.view, context, panel);
+                        break;
                     case 'get_views':
-                        let views = [
-                            { name: "module.json" }, 
-                            { name: "something.json" } 
-                        ];
-                        panel.webview.postMessage({ command: "update_views",
-                            views: views
-                        })
+                        getViews(panel);
+                        break;
                 }
                 },
                 undefined,
@@ -69,11 +63,7 @@ export function activate(context: vscode.ExtensionContext) {
             );  
 
             let disposable = vscode.workspace.onDidSaveTextDocument(async (_) => {
-                g = graph_util.buildGraph(await archlens.getGraphJson(path.GraphJson, context.extensionUri));
-
-                panel.webview.postMessage({ command: "update_graph",
-                    graph:  g!.toList()
-                })
+                g = await updateGraph("module.json", context, panel);
             });
         
             context.subscriptions.push(disposable);
@@ -81,6 +71,28 @@ export function activate(context: vscode.ExtensionContext) {
         })
     );
 
+}
+
+function getViews(panel : vscode.WebviewPanel) {
+    let views = [
+        { name: "module.json" }, 
+        { name: "something.json" } 
+    ];
+    
+    panel.webview.postMessage({ command: "update_views",
+        views: views
+    })
+}
+
+async function updateGraph(view : string, context : vscode.ExtensionContext, panel : vscode.WebviewPanel) : Promise<Graph> {
+    let graph = graph_util.buildGraph(await archlens.getGraphJson(path.GraphJson, context.extensionUri));
+
+    panel.webview.postMessage({ command: "update_graph",
+        graph: graph.toList(),
+        view: view
+    })
+
+    return graph;
 }
 
 // This method is called when your extension is deactivated

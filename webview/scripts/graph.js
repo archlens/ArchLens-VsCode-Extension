@@ -1,13 +1,21 @@
 const vscode = acquireVsCodeApi();
 
 const viewSelect = document.getElementById('view-selector');
+let view;
 
 viewSelect.addEventListener('input', (event) => {
-
-    console.log(event.target.value);
+    view = event.target.value;
+    update_view(view);
 })
 
+function update_view(view) {
+    vscode.postMessage({ command: 'get_view', view: view });
+    console.log(view);
+}
+
 function update_views(views) {
+    view = views[0].name;
+
     const viewOptions = views.map(
         element => {
         let option = document.createElement('option')
@@ -111,4 +119,4 @@ window.addEventListener('message', event => {
 });
 
 vscode.postMessage({command: 'get_views'})
-vscode.postMessage({command: 'get_graph'});
+vscode.postMessage({command: 'get_graph', view: view});
