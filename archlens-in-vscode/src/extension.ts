@@ -7,7 +7,7 @@ import { showTreeView } from './views/FileTreeView';
 import * as archlens from './archlens/archLens';
 import * as path from './filesystem/pathResolver';
 import {Graph} from "./graph/graph";
-import { arch } from 'os';
+import * as filesystem from "./filesystem/fileoperations";
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -73,11 +73,16 @@ export function activate(context: vscode.ExtensionContext) {
 
 }
 
-function getViews(panel : vscode.WebviewPanel) {
-    let views = [
-        { name: "module.json" }, 
-        { name: "something.json" } 
-    ];
+async function getViews(panel : vscode.WebviewPanel) {
+    let config = JSON.parse(await filesystem.readJSON(path.ArchLensConfig));
+
+    let viewsMap = config.views;
+    let views : Array<string> = []
+
+    // projectname-viewname.json
+    for(let [viewName, view] of Object.entries(viewsMap)) {
+        views.push(viewName);
+    }
     
     panel.webview.postMessage({ command: "update_views",
         views: views

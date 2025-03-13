@@ -20,8 +20,8 @@ function update_views(views) {
         element => {
         let option = document.createElement('option')
 
-        option.setAttribute('value', element.name)
-        option.innerHTML = element.name;
+        option.setAttribute('value', element)
+        option.innerHTML = element;
 
         return option;
     });
