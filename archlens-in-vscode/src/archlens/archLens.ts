@@ -13,19 +13,14 @@ async function spawnArchLens(extensionPath : vs.Uri): Promise<void> {
     return new Promise((resolve, reject) => {
         const archLensProcess = spawn(path.Python, [
             path.ArchLensScript,
-            'jsonfile',
+            'render-json',
             "--config-path=" + path.ArchLensConfig.fsPath
         ], {
             cwd: path.ArchLens(extensionPath).fsPath
         });
 
-        // Consider adding stderr and stdout handlers to see error messages
         archLensProcess.stderr.on('data', (data) => {
             console.error(`stderr: ${data}`);
-        });
-
-        archLensProcess.stdout.on('data', (data) => {
-            console.log(`stdout: ${data}`);
         });
 
         archLensProcess.on('error', (error) => {
