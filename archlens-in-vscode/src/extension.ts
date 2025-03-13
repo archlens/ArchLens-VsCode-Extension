@@ -40,6 +40,7 @@ export function activate(context: vscode.ExtensionContext) {
             panel.webview.html = WebviewHTMLTemplate(panel.webview, context.extensionUri);
 
             let g : Graph = new Graph();
+            let view = "";
 
             // Handle messages from the webview
             panel.webview.onDidReceiveMessage(
@@ -49,7 +50,6 @@ export function activate(context: vscode.ExtensionContext) {
                         const files = g!.getFilenamesFromEdge(message.source, message.target);
                         showTreeView(context, files);
                         break;
-                    case 'get_graph':
                     case 'get_view':
                         g = await updateGraph(message.view, context, panel);
                         break;
@@ -62,11 +62,12 @@ export function activate(context: vscode.ExtensionContext) {
                 context.subscriptions
             );  
 
+            /*
             let disposable = vscode.workspace.onDidSaveTextDocument(async (_) => {
                 g = await updateGraph("module.json", context, panel);
             });
-        
-            context.subscriptions.push(disposable);
+          */
+          //  context.subscriptions.push(disposable);
 
         })
     );
@@ -90,7 +91,11 @@ async function getViews(panel : vscode.WebviewPanel) {
 }
 
 async function updateGraph(view : string, context : vscode.ExtensionContext, panel : vscode.WebviewPanel) : Promise<Graph> {
-    let graph = graph_util.buildGraph(await archlens.getGraphJson(path.GraphJson, context.extensionUri));
+    let config = JSON.parse(await filesystem.readJSON(path.ArchLensConfig));
+    let project = config.name;
+    let saveLocation = config.saveLocation ?? "./diagrams";
+
+    let graph = graph_util.buildGraph(await archlens.getGraphJson(path.GraphJson(view, project, saveLocation), context.extensionUri));
 
     panel.webview.postMessage({ command: "update_graph",
         graph: graph.toList(),

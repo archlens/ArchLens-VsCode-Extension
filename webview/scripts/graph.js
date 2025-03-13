@@ -1,12 +1,6 @@
 const vscode = acquireVsCodeApi();
 
 const viewSelect = document.getElementById('view-selector');
-let view;
-
-viewSelect.addEventListener('input', (event) => {
-    view = event.target.value;
-    update_view(view);
-})
 
 function update_view(view) {
     vscode.postMessage({ command: 'get_view', view: view });
@@ -14,7 +8,7 @@ function update_view(view) {
 }
 
 function update_views(views) {
-    view = views[0].name;
+    const view = views[0];
 
     const viewOptions = views.map(
         element => {
@@ -27,6 +21,8 @@ function update_views(views) {
     });
 
     viewSelect.replaceChildren(...viewOptions);
+
+    update_view(view);
 }
 
 function getLabelLength(node){
@@ -118,5 +114,9 @@ window.addEventListener('message', event => {
     }
 });
 
-vscode.postMessage({command: 'get_views'})
-vscode.postMessage({command: 'get_graph', view: view});
+await vscode.postMessage({command: 'get_views'});
+
+viewSelect.addEventListener('input', (event) => {
+    const view = event.target.value;
+    update_view(view);
+})
