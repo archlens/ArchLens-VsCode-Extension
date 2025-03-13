@@ -1,5 +1,34 @@
 const vscode = acquireVsCodeApi();
 
+const viewSelect = document.getElementById('view-selector');
+let view;
+
+viewSelect.addEventListener('input', (event) => {
+    view = event.target.value;
+    update_view(view);
+})
+
+function update_view(view) {
+    vscode.postMessage({ command: 'get_view', view: view });
+    console.log(view);
+}
+
+function update_views(views) {
+    view = views[0].name;
+
+    const viewOptions = views.map(
+        element => {
+        let option = document.createElement('option')
+
+        option.setAttribute('value', element.name)
+        option.innerHTML = element.name;
+
+        return option;
+    });
+
+    viewSelect.replaceChildren(...viewOptions);
+}
+
 function getLabelLength(node){
     if (node.data('label')) {
         return node.data('label').length
@@ -63,7 +92,7 @@ function make_graph(elements){
     const layout = {
         name: "cose-bilkent",
         fit: true,
-        idealEdgeLength: 200
+        idealEdgeLength: 400
     }
 
     cy.layout(layout).run()
@@ -82,7 +111,12 @@ window.addEventListener('message', event => {
     switch (message.command){
         case 'update_graph':
             make_graph(message.graph);
+            break;
+        case 'update_views':
+            update_views(message.views);
+            break;
     }
 });
 
-vscode.postMessage({command: 'get_graph'});
+vscode.postMessage({command: 'get_views'})
+vscode.postMessage({command: 'get_graph', view: view});
