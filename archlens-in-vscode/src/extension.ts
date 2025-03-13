@@ -1,10 +1,12 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import { getWebviewContent } from './utilities/getWebviewContent';
-import * as graph_util from "./utilities/graph";
-import { showTreeView } from './utilities/treeView';
+import { WebviewHTMLTemplate } from './views/webviewHTMLTemplate';
+import * as graph_util from "./graph/graphGeneration";
+import { showTreeView } from './views/FileTreeView';
 import * as archlens from './archlens/archLens';
+import * as path from './filesystem/pathResolver';
+import {Graph} from "./graph/graph";
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -31,27 +33,23 @@ export function activate(context: vscode.ExtensionContext) {
                                         ]
                 }
             );
-            
-            const workspaceRootPath = vscode.workspace.workspaceFolders?.[0]?.uri;
-        
-            const graphPath = vscode.Uri.joinPath(workspaceRootPath!, "./diagrams/modules.json");
 
-            panel.webview.html = getWebviewContent(panel.webview, context.extensionUri);
+            panel.webview.html = WebviewHTMLTemplate(panel.webview, context.extensionUri);
 
-            let g : Map<string, any> | undefined = undefined;
+            let g : Graph = new Graph();
 
             // Handle messages from the webview
             panel.webview.onDidReceiveMessage(
                 async message => {
                 switch (message.command) {
                     case 'edge_clicked':
-                        const files = graph_util.getFilenamesFromEdge(g!, message.source, message.target);
+                        const files = g!.getFilenamesFromEdge(message.source, message.target);
                         showTreeView(context, files);
                         return;
                     case 'get_graph':
-                        g = graph_util.buildGraph(await archlens.getGraphJson(graphPath, context.extensionUri));  
+                        g = graph_util.buildGraph(await archlens.getGraphJson(path.GraphJson, context.extensionUri));
                         panel.webview.postMessage({ command: "update_graph",
-                            graph:  graph_util.makeElementsList(g)
+                            graph:  g.toList()                        
                         })
                         return;
                 }
@@ -61,9 +59,10 @@ export function activate(context: vscode.ExtensionContext) {
             );  
 
             let disposable = vscode.workspace.onDidSaveTextDocument(async (_) => {
-                g = graph_util.buildGraph(await archlens.getGraphJson(graphPath, context.extensionUri));  
+                g = graph_util.buildGraph(await archlens.getGraphJson(path.GraphJson, context.extensionUri));
+
                 panel.webview.postMessage({ command: "update_graph",
-                    graph:  graph_util.makeElementsList(g!)
+                    graph:  g!.toList()
                 })
             });
         

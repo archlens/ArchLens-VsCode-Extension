@@ -1,17 +1,16 @@
 import * as vscode from 'vscode';
 
-export function graphPath() {
-    const workspaceRootPath = getWorkspaceRoot();
+export const WorkspaceRoot : vscode.Uri = vscode.workspace.workspaceFolders?.[0]?.uri!;
 
-    return vscode.Uri.joinPath(workspaceRootPath!, "/ArchLens/diagrams/modules.json");
-}
+export const GraphJson : vscode.Uri = vscode.Uri.joinPath(WorkspaceRoot, "./diagrams/modules.json");
 
-export function archLensPath() {
-    const workspaceRootPath = getWorkspaceRoot();
+export const ArchLensScript : string = './src/cli_interface.py';
 
-    return vscode.Uri.joinPath(workspaceRootPath!, "/ArchLens/src/cli_interface.py");
-}
+export const Python: string = process.platform === "win32" ?
+    '.venv/Scripts/python.exe' : '.venv/bin/python';
 
-function getWorkspaceRoot() {
-    return vscode.workspace.workspaceFolders?.[0]?.uri;
+export const ArchLensConfig : vscode.Uri = vscode.Uri.joinPath(WorkspaceRoot, "archlens.json");
+
+export function ArchLens(extensionPath : vscode.Uri): vscode.Uri {
+    return vscode.Uri.joinPath(extensionPath, '..', 'ArchLens');
 }
