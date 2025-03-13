@@ -1,0 +1,27 @@
+body {
+    width: calc(100vw - 40px); 
+    height: calc(100vh - 100px); 
+    padding-top: 20px;
+}
+
+header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%; 
+    height: 60px; 
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+#graph {
+    width: 100%; 
+    height: 100%; 
+    border: 1px solid black;
+    background-color: grey;
+}
+
+.select-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
