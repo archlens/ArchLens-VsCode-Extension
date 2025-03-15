@@ -1,12 +1,6 @@
 const vscode = acquireVsCodeApi();
 
 const viewSelect = document.getElementById('view-selector');
-let view;
-
-viewSelect.addEventListener('input', (event) => {
-    view = event.target.value;
-    update_view(view);
-})
 
 function update_view(view) {
     vscode.postMessage({ command: 'get_view', view: view });
@@ -14,19 +8,21 @@ function update_view(view) {
 }
 
 function update_views(views) {
-    view = views[0].name;
+    const view = views[0];
 
     const viewOptions = views.map(
         element => {
         let option = document.createElement('option')
 
-        option.setAttribute('value', element.name)
-        option.innerHTML = element.name;
+        option.setAttribute('value', element)
+        option.innerHTML = element;
 
         return option;
     });
 
     viewSelect.replaceChildren(...viewOptions);
+
+    update_view(view);
 }
 
 function getLabelLength(node){
@@ -100,7 +96,7 @@ function make_graph(elements){
     // Add a click event to edges
     cy.on('tap', 'edge', function(evt) {
         var edge = evt.target;
-        vscode.postMessage({command: 'edge_clicked', source: edge.source().id(), target: edge.target().id()});
+        vscode.postMessage({command: 'edge_clicked', edgeID: edge.id()});
         
     });
 }
@@ -118,5 +114,9 @@ window.addEventListener('message', event => {
     }
 });
 
-vscode.postMessage({command: 'get_views'})
-vscode.postMessage({command: 'get_graph', view: view});
+await vscode.postMessage({command: 'get_views'});
+
+viewSelect.addEventListener('input', (event) => {
+    const view = event.target.value;
+    update_view(view);
+})

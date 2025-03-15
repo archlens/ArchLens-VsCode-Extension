@@ -1,99 +1,46 @@
-
+import * as json_interfaces from "./graphJson"
 
 export class Graph {
+    public title : string;
+    public packages : Array<json_interfaces.Package>;
+    public edges : Map<string, Edge>;
 
-    private modules : Map<string, GraphModule> =    new Map<string, GraphModule>();
-    private files : Map<string, GraphFile> = new Map<string, GraphFile>();
-
-    constructor() {
+    constructor(g : json_interfaces.Graph) {
+        this.title = g.title;
+        this.packages = g.packages;
+        this.edges = new Map(g.edges.map(e => [e.fromPackage + "=>" + e.toPackage, new Edge(e)]));
     }
 
-    getModule(name : string) : GraphModule | undefined {
-        return this.modules.get(name);
-    }
-
-    setModule(module : GraphModule) : void {
-        this.modules.set(module.fullName, module);
-    }
-
-    getFile(name : string) : GraphFile | undefined {
-        return this.files.get(name);
-    }
-
-    setFile(file : GraphFile) : void {
-        this.files.set(file.path, file);
-    }
-
-    getFilenamesFromEdge(source : string, target : string) : Map<string, string[]>{
-        let sourceModule = this.getModule(source)!;
-        let targetModule = this.getModule(target)!;
-
-        let files = new Map<string, string[]>();
-
-        for (let sourceFile of sourceModule.files){
-
-            const targetEdges = Array.from(sourceFile.edge_to)
-                .filter(edge => targetModule.files.has(edge))
-                .map(edge => edge.name);
-
-            if (targetEdges.length > 0) {
-                files.set(sourceFile.name, targetEdges);
-            }
-        }
-
-        return files;
+    getEdgeFromID(id : string){
+        return this.edges.get(id);
     }
 
     toList(){
-        let elements = Array.from(this.modules).map<object>((m, i, elements) => { return { data: { id: m[1].fullName, label: m[1].fullName, type: 'Module' }}});
-    
-        let edges = new Map;
-    
-        for (let [name, from] of this.files){
-            for( let to of from.edge_to){
-                if(from.module == to.module) {
-                    continue;
-                }
-
-                let label = null;
-                let fullEdgeName = from.module!.fullName+to.module!.fullName;
-
-                if(edges.has(fullEdgeName)){
-                    label = edges.get(fullEdgeName);
-                    label.data.label++;
-                } else {
-                    label = { data: {id: (fullEdgeName), source: from.module.fullName, target: to.module!.fullName, label:1 }};
-                }
-                edges.set(fullEdgeName, label);
-            }
+        let elements = this.packages.map<object>((p, i, elements) => { return { data: { id: p.name, label: p.name, type: p.state }}});
+        let edges : object[] = [];
+        for (let [_, e] of this.edges) {
+            edges.push({data: {id: e.id, label: e.label, source: e.fromPackage, target: e.toPackage, type: e.state}});
         }
-    
-        for (let [key, data] of edges){
-            elements.push(data);
-        }
-    
-        return elements;
+
+        return elements.concat(edges);
     }
+
 }
 
-export class GraphFile {
+export class Edge {
+    public id : string;
+    public state : string;
+    public fromPackage : string;
+    public toPackage : string;
+    public label : string;
+    public relations : Array<json_interfaces.Relation>;
 
-    public edge_to : Set<GraphFile> = new Set<GraphFile>
-
-    constructor (
-        public name : string,
-        public path : string,
-        public module : GraphModule
-    ) {}
-}
-
-export class GraphModule {
-
-    public files : Set<GraphFile> = new Set<GraphFile>();
-
-    constructor (
-        public name : string,
-        public fullName : string,
-        public path : string,
-    ) {}
+    constructor(e : json_interfaces.Edge){
+        this.id = e.fromPackage + "=>" + e.toPackage;
+        this.state = e.state;
+        this.fromPackage = e.fromPackage;
+        this.toPackage = e.toPackage;
+        this.label = e.label;
+        this.relations = e.relations;
+    }
 }
