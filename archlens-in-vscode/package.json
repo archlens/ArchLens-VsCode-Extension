@@ -16,6 +16,10 @@
       {
         "command": "archlens-in-vscode.openGraphView",
         "title": "Open Graph-view"
+      },
+      {
+        "command": "archlens-in-vscode.openFile",
+        "title": "Open File"
       }
     ],
     "views": {
