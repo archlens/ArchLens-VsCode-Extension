@@ -72,13 +72,16 @@ export function activate(context: vscode.ExtensionContext) {
                 context.subscriptions
             );  
 
-            /*
-            let disposable = vscode.workspace.onDidSaveTextDocument(async (_) => {
-                g = await updateGraph("module.json", context, panel);
+            
+            let saveEventHandler = vscode.workspace.onDidSaveTextDocument(async (_) => {
+                g = await updateGraph(view, context, panel, true);
             });
-          */
-          //  context.subscriptions.push(disposable);
 
+            let deleteFileEventHandler = vscode.workspace.onDidDeleteFiles(async (_) => {
+                g = await updateGraph(view, context, panel, true);
+            });
+          
+            context.subscriptions.push(saveEventHandler, deleteFileEventHandler);
         })
     );
 
