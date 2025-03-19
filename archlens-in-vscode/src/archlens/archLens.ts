@@ -3,10 +3,26 @@ import * as file from '../filesystem/fileoperations';
 import * as vs from 'vscode';
 import * as path from '../filesystem/pathResolver';
 
-export async function getGraphJson(graphPath: vs.Uri, extensionPath: vs.Uri): Promise<string> {
-    await spawnArchLens(extensionPath)
+export async function getGraphJson(graphPath: vs.Uri, extensionPath: vs.Uri, reload: boolean = false): Promise<string> {
+    
+    if(reload) {
+        await spawnArchLens(extensionPath);
 
-    return await file.readJSON(graphPath);
+        console.log("Reloading graph")
+    }
+
+    let json = "";
+
+    try {
+        json = await file.readJSON(graphPath);
+    } catch(error) {
+        if (error instanceof vs.FileSystemError) {
+            await spawnArchLens(extensionPath);
+            json = await file.readJSON(graphPath)
+        }
+    }
+
+    return json;
 }
 
 async function spawnArchLens(extensionPath : vs.Uri): Promise<void> {

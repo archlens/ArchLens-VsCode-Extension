@@ -61,7 +61,7 @@ export function activate(context: vscode.ExtensionContext) {
                         showTreeView(context, edge!);
                         break;
                     case 'get_view':
-                        g = await updateGraph(message.view, context, panel);
+                        g = await updateGraph(message.view, context, panel, message.reload);
                         break;
                     case 'get_views':
                         getViews(panel);
@@ -100,12 +100,21 @@ async function getViews(panel : vscode.WebviewPanel) {
     })
 }
 
-async function updateGraph(view : string, context : vscode.ExtensionContext, panel : vscode.WebviewPanel) : Promise<Graph> {
+async function updateGraph(view : string, context : vscode.ExtensionContext, panel : vscode.WebviewPanel, reload: boolean = false) : Promise<Graph> {
     let config = JSON.parse(await filesystem.readJSON(path.ArchLensConfig));
     let project = config.name;
     let saveLocation = config.saveLocation ?? "./diagrams";
 
-    let graph = graph_util.buildGraph(await archlens.getGraphJson(path.GraphJson(view, project, saveLocation), context.extensionUri));
+    let graph = graph_util.buildGraph(await archlens.getGraphJson(
+            path.GraphJson(
+                view, 
+                project, 
+                saveLocation
+            ), 
+            context.extensionUri, 
+            reload
+        )
+    );
 
     panel.webview.postMessage({ command: "update_graph",
         graph: graph.toList(),
