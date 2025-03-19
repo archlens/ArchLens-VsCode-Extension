@@ -9,8 +9,11 @@ export const Python: string = process.platform === "win32" ?
 
 export const ArchLensConfig : vscode.Uri = vscode.Uri.joinPath(WorkspaceRoot, "archlens.json");
 
-export const GraphJson : vscode.Uri = vscode.Uri.joinPath(WorkspaceRoot, "./diagrams/modules.json");
+export function GraphJson(view : string, projectName : string, saveLocation : string) : vscode.Uri {
+    let fullViewName = `${projectName}-${view}.json`;
 
+    return vscode.Uri.joinPath(WorkspaceRoot, saveLocation, fullViewName);
+}
 
 export function ArchLens(extensionPath : vscode.Uri): vscode.Uri {
     return vscode.Uri.joinPath(extensionPath, '..', 'ArchLens');
