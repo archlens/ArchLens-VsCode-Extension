@@ -37,10 +37,12 @@ export function activate(context: vscode.ExtensionContext) {
                 vscode.ViewColumn.Two,
                 {
                     enableScripts: true,
+                    retainContextWhenHidden: true,
                     localResourceRoots: [
                         vscode.Uri.joinPath(context.extensionUri, "..", "webview"),
                         vscode.Uri.joinPath(context.extensionUri, "..", "webview", "scripts"),
-                        vscode.Uri.joinPath(context.extensionUri, "..", "webview", "styles")
+                        vscode.Uri.joinPath(context.extensionUri, "..", "webview", "styles"),
+                        vscode.Uri.joinPath(context.extensionUri, "..", "webview", "node_modules")
                       ]
                 }
             );
@@ -60,7 +62,7 @@ export function activate(context: vscode.ExtensionContext) {
                         showTreeView(context, edge!);
                         break;
                     case 'get_view':
-                        g = await updateGraph(message.view, context, panel);
+                        g = await updateGraph(message.view, context, panel, message.reload);
                         break;
                     case 'get_views':
                         getViews(panel);
@@ -71,13 +73,16 @@ export function activate(context: vscode.ExtensionContext) {
                 context.subscriptions
             );  
 
-            /*
-            let disposable = vscode.workspace.onDidSaveTextDocument(async (_) => {
-                g = await updateGraph("module.json", context, panel);
+            
+            let saveEventHandler = vscode.workspace.onDidSaveTextDocument(async (_) => {
+                g = await updateGraph(view, context, panel, true);
             });
-          */
-          //  context.subscriptions.push(disposable);
 
+            let deleteFileEventHandler = vscode.workspace.onDidDeleteFiles(async (_) => {
+                g = await updateGraph(view, context, panel, true);
+            });
+          
+            context.subscriptions.push(saveEventHandler, deleteFileEventHandler);
         })
     );
 
@@ -99,12 +104,21 @@ async function getViews(panel : vscode.WebviewPanel) {
     })
 }
 
-async function updateGraph(view : string, context : vscode.ExtensionContext, panel : vscode.WebviewPanel) : Promise<Graph> {
+async function updateGraph(view : string, context : vscode.ExtensionContext, panel : vscode.WebviewPanel, reload: boolean = false) : Promise<Graph> {
     let config = JSON.parse(await filesystem.readJSON(path.ArchLensConfig));
     let project = config.name;
     let saveLocation = config.saveLocation ?? "./diagrams";
 
-    let graph = graph_util.buildGraph(await archlens.getGraphJson(path.GraphJson(view, project, saveLocation), context.extensionUri));
+    let graph = graph_util.buildGraph(await archlens.getGraphJson(
+            path.GraphJson(
+                view, 
+                project, 
+                saveLocation
+            ), 
+            context.extensionUri, 
+            reload
+        )
+    );
 
     panel.webview.postMessage({ command: "update_graph",
         graph: graph.toList(),

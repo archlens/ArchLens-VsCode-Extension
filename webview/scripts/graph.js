@@ -2,8 +2,8 @@ const vscode = acquireVsCodeApi();
 
 const viewSelect = document.getElementById('view-selector');
 
-function update_view(view) {
-    vscode.postMessage({ command: 'get_view', view: view });
+function update_view(view, reload = false) {
+    vscode.postMessage({ command: 'get_view', view: view, reload: reload });
     console.log(view);
 }
 
@@ -22,7 +22,7 @@ function update_views(views) {
 
     viewSelect.replaceChildren(...viewOptions);
 
-    update_view(view);
+    update_view(view, true);
 }
 
 function getLabelLength(node){
@@ -86,9 +86,7 @@ function make_graph(elements){
     });
 
     const layout = {
-        name: "cose-bilkent",
-        fit: true,
-        idealEdgeLength: 400
+        name: "dagre",
     }
 
     cy.layout(layout).run()
