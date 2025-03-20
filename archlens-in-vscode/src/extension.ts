@@ -40,7 +40,8 @@ export function activate(context: vscode.ExtensionContext) {
                     localResourceRoots: [
                         vscode.Uri.joinPath(context.extensionUri, "..", "webview"),
                         vscode.Uri.joinPath(context.extensionUri, "..", "webview", "scripts"),
-                        vscode.Uri.joinPath(context.extensionUri, "..", "webview", "styles")
+                        vscode.Uri.joinPath(context.extensionUri, "..", "webview", "styles"),
+                        vscode.Uri.joinPath(context.extensionUri, "..", "webview", "node_modules")
                       ]
                 }
             );
