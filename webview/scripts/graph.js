@@ -80,8 +80,21 @@ function make_graph(elements){
                     'color': '#fff', 'text-valign': 'center',
                     'font-family': 'monospace'
                 }
+            }, 
+            {
+                selector: '.DELETED',
+                style: {
+                    'background-color': '#f00',
+                    'line-color': '#f00'
+                }
             },
-
+            {
+                selector: '.CREATED',
+                style: {
+                    'background-color': '#0f0',
+                    'line-color': '#0f0'
+                }
+            }
         ],
     });
 
