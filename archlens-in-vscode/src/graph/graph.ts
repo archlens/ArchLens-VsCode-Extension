@@ -16,7 +16,7 @@ export class Graph {
     }
 
     toList(){
-        let elements = this.packages.map<object>((p, i, elements) => { return { data: { id: p.name, label: p.name, type: p.state }}});
+        let elements = this.packages.map<object>((p, i, elements) => { return { data: { id: p.name, label: p.name, type: p.state}}});
         let edges : object[] = [];
         for (let [_, e] of this.edges) {
             edges.push({data: {id: e.id, label: e.label, source: e.fromPackage, target: e.toPackage, type: e.state}});

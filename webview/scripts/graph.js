@@ -86,9 +86,7 @@ function make_graph(elements){
     });
 
     const layout = {
-        name: "cose-bilkent",
-        fit: true,
-        idealEdgeLength: 400
+        name: "dagre",
     }
 
     cy.layout(layout).run()

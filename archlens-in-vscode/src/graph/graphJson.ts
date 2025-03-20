@@ -6,7 +6,7 @@ export interface Graph {
 
 export interface Package {
     name : string,
-    state : string
+    state : string,
 }
 
 export interface Edge {
