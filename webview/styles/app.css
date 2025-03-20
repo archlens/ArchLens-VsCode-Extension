@@ -20,8 +20,19 @@ header {
     background-color: grey;
 }
 
-.select-wrapper {
+.column {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+}
+
+.select-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    justify-content: center;
     gap: 10px;
+    width: 100%;
+}
+
+.right {
+    justify-content: right;
 }
