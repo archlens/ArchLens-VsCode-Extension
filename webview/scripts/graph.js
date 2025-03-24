@@ -7,13 +7,18 @@ const loadingOverlay = document.getElementById('loading-overlay');
 let diffView = false;
 let view;
 
-function update_view(view, diffView = false, reload = false) {
-    awaitReload(() => {
-            vscode.postMessage({ command: 'get_view', view: view, diffView: diffView, reload: reload })
-        }
-    );
+window.addEventListener('message', (event) => {
+    const message = event.data.command;
 
-    console.log(view);
+    if(message === 'reloading') {
+        loadingOverlay.classList.remove('hidden');
+    } else if(message === 'reloaded') {
+        loadingOverlay.classList.add('hidden');
+    }
+})
+
+function update_view(view, diffView = false, reload = false) {
+    vscode.postMessage({ command: 'get_view', view: view, diffView: diffView, reload: reload })
 }
 
 function update_views(views) {
@@ -89,7 +94,17 @@ function make_graph(elements){
                     'color': '#fff', 'text-valign': 'center',
                     'font-family': 'monospace'
                 }
-            }, 
+            },
+            {
+                
+                selector: "edge[label]",
+                style: {
+                    "label": "data(label)",
+                    "z-index": "",
+                    "text-margin-x": "0px",
+                    "text-margin-y": "0px"
+                }
+            },
             {
                 selector: '.DELETED',
                 style: {
@@ -109,16 +124,39 @@ function make_graph(elements){
 
     const layout = {
         name: "dagre",
+        rankDir: 'TB',     
+        nodeSep: 50,       
+        rankSep: 60,       
+        edgeSep: 80,       
+        spacingFactor: 1.5,
     }
 
     cy.layout(layout).run()
 
-    // Add a click event to edges
     cy.on('tap', 'edge', function(evt) {
         var edge = evt.target;
         vscode.postMessage({command: 'edge_clicked', edgeID: edge.id()});
         
     });
+
+    function updateLabelStyles(zoom) {
+        if (zoom < 1.1) {
+            cy.style()
+                .selector('edge[label]')
+                .style({
+                    'font-size': Math.max(font_height, font_height / zoom * 0.5)
+                })
+                .update();
+        }
+    }
+
+    cy.on('zoom', function() {
+        updateLabelStyles(cy.zoom());
+    });
+
+    updateLabelStyles(cy.zoom());
+
+    cy.center();
 }
 
 
@@ -148,19 +186,3 @@ diffViewCheckBox.addEventListener('change', (event) => {
 
     console.log(diffView);
 });
-
-function awaitReload(reloadFunction) {
-    
-    loadingOverlay.classList.remove('hidden');
-
-    reloadFunction()
-
-
-    const handleGraphUpdate = (event) => {
-        if (event.data.command === 'update_graph') {
-            loadingOverlay.classList.add('hidden');
-        }
-    };
-    
-    window.addEventListener('message', handleGraphUpdate);
-}

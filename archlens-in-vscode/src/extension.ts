@@ -115,6 +115,9 @@ async function updateGraph(
     diffView = false, 
     reload: boolean = false
 ) : Promise<Graph> {
+    panel.webview.postMessage({
+        command: "reloading"
+    });
     
     let config = JSON.parse(await filesystem.readJSON(path.ArchLensConfig));
     let project = config.name;
@@ -138,8 +141,11 @@ async function updateGraph(
         view: view
     })
 
+    panel.webview.postMessage({
+        command: "reloaded"
+    })
+
     return graph;
 }
 
-// This method is called when your extension is deactivated
 export function deactivate() {}
