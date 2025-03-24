@@ -1,14 +1,17 @@
 const vscode = acquireVsCodeApi();
 
 const viewSelect = document.getElementById('view-selector');
+const diffViewCheckBox = document.getElementById('diff-view-checkbox');
+let diffView = false;
+let view;
 
-function update_view(view, reload = false) {
-    vscode.postMessage({ command: 'get_view', view: view, reload: reload });
+function update_view(view, diffView = false, reload = false) {
+    vscode.postMessage({ command: 'get_view', view: view, diffView: diffView, reload: reload });
     console.log(view);
 }
 
 function update_views(views) {
-    const view = views[0];
+    view = views[0];
 
     const viewOptions = views.map(
         element => {
@@ -22,7 +25,7 @@ function update_views(views) {
 
     viewSelect.replaceChildren(...viewOptions);
 
-    update_view(view, true);
+    update_view(view, diffView, true);
 }
 
 function getLabelLength(node){
@@ -129,5 +132,13 @@ await vscode.postMessage({command: 'get_views'});
 
 viewSelect.addEventListener('input', (event) => {
     const view = event.target.value;
-    update_view(view);
-})
+    update_view(view, diffView);
+});
+
+diffViewCheckBox.addEventListener('change', (event) => {
+    diffView = event.target.checked;
+
+    update_view(view, diffView, true)
+
+    console.log(diffView);
+});
