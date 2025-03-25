@@ -87,6 +87,11 @@ export function activate(context: vscode.ExtensionContext) {
             });
           
             context.subscriptions.push(saveEventHandler, deleteFileEventHandler);
+
+            panel.onDidDispose(() => {
+                saveEventHandler.dispose();
+                deleteFileEventHandler.dispose();
+            });
         })
     );
 
