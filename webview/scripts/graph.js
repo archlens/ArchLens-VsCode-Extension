@@ -2,20 +2,9 @@ const vscode = acquireVsCodeApi();
 
 const viewSelect = document.getElementById('view-selector');
 const diffViewCheckBox = document.getElementById('diff-view-checkbox');
-const loadingOverlay = document.getElementById('loading-overlay');
 
 let diffView = false;
 let view;
-
-window.addEventListener('message', (event) => {
-    const message = event.data.command;
-
-    if(message === 'reloading') {
-        loadingOverlay.classList.remove('hidden');
-    } else if(message === 'reloaded') {
-        loadingOverlay.classList.add('hidden');
-    }
-})
 
 function update_view(view, diffView = false, reload = false) {
     vscode.postMessage({ command: 'get_view', view: view, diffView: diffView, reload: reload })
