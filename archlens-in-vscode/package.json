@@ -6,6 +6,13 @@
   "engines": {
     "vscode": "^1.97.0"
   },
+  "files": [
+    "out/**",
+    "webview/**"
+  ],
+  "extensionDependencies": [
+    "ms-python.python"
+  ],
   "categories": [
     "Other"
   ],
