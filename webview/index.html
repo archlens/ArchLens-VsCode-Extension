@@ -10,11 +10,24 @@
 <body>
     <header>
         <div class="select-wrapper">
-            <label>
-                View:
-            </label>
-            <select id="view-selector">
-            </select>
+            <div>
+                <input type="hidden">
+            </div>
+
+            <div>
+                <label>
+                    View:
+                </label>
+                <select id="view-selector">
+                </select>
+            </div>
+            
+            <div>
+                <label>
+                    Enable Diff View:
+                </label>
+                <input type="checkbox" id="diff-view-checkbox">
+            </div>
         </div>
     </header>
     <div id="graph"></div>

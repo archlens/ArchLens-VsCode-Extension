@@ -3,10 +3,10 @@ import * as file from '../filesystem/fileoperations';
 import * as vs from 'vscode';
 import * as path from '../filesystem/pathResolver';
 
-export async function getGraphJson(graphPath: vs.Uri, extensionPath: vs.Uri, reload: boolean = false): Promise<string> {
+export async function getGraphJson(graphPath: vs.Uri, extensionPath: vs.Uri, diffView : boolean, reload: boolean): Promise<string> {
     
     if(reload) {
-        await spawnArchLens(extensionPath);
+        await spawnArchLens(extensionPath, diffView);
 
         console.log("Reloading graph")
     }
@@ -17,7 +17,7 @@ export async function getGraphJson(graphPath: vs.Uri, extensionPath: vs.Uri, rel
         json = await file.readJSON(graphPath);
     } catch(error) {
         if (error instanceof vs.FileSystemError) {
-            await spawnArchLens(extensionPath);
+            await spawnArchLens(extensionPath, diffView);
             json = await file.readJSON(graphPath)
         }
     }
@@ -25,11 +25,13 @@ export async function getGraphJson(graphPath: vs.Uri, extensionPath: vs.Uri, rel
     return json;
 }
 
-async function spawnArchLens(extensionPath : vs.Uri): Promise<void> {
+async function spawnArchLens(extensionPath : vs.Uri, diffView : boolean): Promise<void> {
+    const diffViewModifier = diffView ? "diff-" : "";
+
     return new Promise((resolve, reject) => {
         const archLensProcess = spawn(path.Python, [
             path.ArchLensScript,
-            'render-json',
+            `render-${diffViewModifier}json`,
             "--config-path=" + path.ArchLensConfig.fsPath
         ], {
             cwd: path.ArchLens(extensionPath).fsPath

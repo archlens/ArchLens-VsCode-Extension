@@ -1,14 +1,17 @@
 const vscode = acquireVsCodeApi();
 
 const viewSelect = document.getElementById('view-selector');
+const diffViewCheckBox = document.getElementById('diff-view-checkbox');
 
-function update_view(view, reload = false) {
-    vscode.postMessage({ command: 'get_view', view: view, reload: reload });
-    console.log(view);
+let diffView = false;
+let view;
+
+function update_view(view, diffView = false, reload = false) {
+    vscode.postMessage({ command: 'get_view', view: view, diffView: diffView, reload: reload })
 }
 
 function update_views(views) {
-    const view = views[0];
+    view = views[0];
 
     const viewOptions = views.map(
         element => {
@@ -22,7 +25,7 @@ function update_views(views) {
 
     viewSelect.replaceChildren(...viewOptions);
 
-    update_view(view, true);
+    update_view(view, diffView, true);
 }
 
 function getLabelLength(node){
@@ -81,22 +84,68 @@ function make_graph(elements){
                     'font-family': 'monospace'
                 }
             },
-
+            {
+                
+                selector: "edge[label]",
+                style: {
+                    "label": "data(label)",
+                    "z-index": "",
+                    "text-margin-x": "0px",
+                    "text-margin-y": "0px"
+                }
+            },
+            {
+                selector: '.DELETED',
+                style: {
+                    'background-color': '#f00',
+                    'line-color': '#f00'
+                }
+            },
+            {
+                selector: '.CREATED',
+                style: {
+                    'background-color': '#0f0',
+                    'line-color': '#0f0'
+                }
+            }
         ],
     });
 
     const layout = {
         name: "dagre",
+        rankDir: 'TB',     
+        nodeSep: 50,       
+        rankSep: 60,       
+        edgeSep: 80,       
+        spacingFactor: 1.5,
     }
 
     cy.layout(layout).run()
 
-    // Add a click event to edges
     cy.on('tap', 'edge', function(evt) {
         var edge = evt.target;
         vscode.postMessage({command: 'edge_clicked', edgeID: edge.id()});
         
     });
+
+    function updateLabelStyles(zoom) {
+        if (zoom < 1.1) {
+            cy.style()
+                .selector('edge[label]')
+                .style({
+                    'font-size': Math.max(font_height, font_height / zoom * 0.5)
+                })
+                .update();
+        }
+    }
+
+    cy.on('zoom', function() {
+        updateLabelStyles(cy.zoom());
+    });
+
+    updateLabelStyles(cy.zoom());
+
+    cy.center();
 }
 
 
@@ -116,5 +165,13 @@ await vscode.postMessage({command: 'get_views'});
 
 viewSelect.addEventListener('input', (event) => {
     const view = event.target.value;
-    update_view(view);
-})
+    update_view(view, diffView);
+});
+
+diffViewCheckBox.addEventListener('change', (event) => {
+    diffView = event.target.checked;
+
+    update_view(view, diffView, true)
+
+    console.log(diffView);
+});

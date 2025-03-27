@@ -9,8 +9,9 @@ export const Python: string = process.platform === "win32" ?
 
 export const ArchLensConfig : vscode.Uri = vscode.Uri.joinPath(WorkspaceRoot, "archlens.json");
 
-export function GraphJson(view : string, projectName : string, saveLocation : string) : vscode.Uri {
-    let fullViewName = `${projectName}-${view}.json`;
+export function GraphJson(view : string, diffView : boolean, projectName : string, saveLocation : string) : vscode.Uri {
+    let diffViewModifier = diffView ? "diff-" : "";
+    let fullViewName = `${projectName}-${diffViewModifier}${view}.json`;
 
     return vscode.Uri.joinPath(WorkspaceRoot, saveLocation, fullViewName);
 }

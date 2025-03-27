@@ -52,6 +52,7 @@ export function activate(context: vscode.ExtensionContext) {
 
             let g : Graph | undefined = undefined;
             let view = "";
+            let diffView = false;
 
             // Handle messages from the webview
             panel.webview.onDidReceiveMessage(
@@ -62,7 +63,10 @@ export function activate(context: vscode.ExtensionContext) {
                         showTreeView(context, edge!);
                         break;
                     case 'get_view':
-                        g = await updateGraph(message.view, context, panel, message.reload);
+                        view = message.view;
+                        diffView = message.diffView;
+
+                        g = await updateGraph(view, context, panel, diffView, message.reload);
                         break;
                     case 'get_views':
                         getViews(panel);
@@ -75,14 +79,19 @@ export function activate(context: vscode.ExtensionContext) {
 
             
             let saveEventHandler = vscode.workspace.onDidSaveTextDocument(async (_) => {
-                g = await updateGraph(view, context, panel, true);
+                g = await updateGraph(view, context, panel, diffView, true);
             });
 
             let deleteFileEventHandler = vscode.workspace.onDidDeleteFiles(async (_) => {
-                g = await updateGraph(view, context, panel, true);
+                g = await updateGraph(view, context, panel, diffView, true);
             });
           
             context.subscriptions.push(saveEventHandler, deleteFileEventHandler);
+
+            panel.onDidDispose(() => {
+                saveEventHandler.dispose();
+                deleteFileEventHandler.dispose();
+            });
         })
     );
 
@@ -104,7 +113,15 @@ async function getViews(panel : vscode.WebviewPanel) {
     })
 }
 
-async function updateGraph(view : string, context : vscode.ExtensionContext, panel : vscode.WebviewPanel, reload: boolean = false) : Promise<Graph> {
+async function updateGraph(
+    view : string, 
+    context : vscode.ExtensionContext, 
+    panel : vscode.WebviewPanel, 
+    diffView = false, 
+    reload: boolean = false
+) : Promise<Graph> {
+    vscode.window.showInformationMessage("Reloading graph...");
+    
     let config = JSON.parse(await filesystem.readJSON(path.ArchLensConfig));
     let project = config.name;
     let saveLocation = config.saveLocation ?? "./diagrams";
@@ -112,10 +129,12 @@ async function updateGraph(view : string, context : vscode.ExtensionContext, pan
     let graph = graph_util.buildGraph(await archlens.getGraphJson(
             path.GraphJson(
                 view, 
+                diffView,
                 project, 
                 saveLocation
             ), 
-            context.extensionUri, 
+            context.extensionUri,
+            diffView,
             reload
         )
     );
@@ -125,8 +144,9 @@ async function updateGraph(view : string, context : vscode.ExtensionContext, pan
         view: view
     })
 
+    vscode.window.showInformationMessage("Graph reloaded!", );
+
     return graph;
 }
 
-// This method is called when your extension is deactivated
 export function deactivate() {}
