@@ -6,6 +6,10 @@ A Visual Studio Code extension that allows you to use ArchLens directly in your 
 ArchLens is included as a submodule in this repository. In this way, we can use the latest version of ArchLens to
 develop the extension
 
+![diff view](./images/diff-view.png)
+![busy view](./images/busy-view.png)
+![normal view](./images/normal-view.png)
+
 ### Setting up ArchLens
 
 To be able to develop the extension, you need to have python installed. This python version should be compatible
