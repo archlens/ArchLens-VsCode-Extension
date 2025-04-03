@@ -9,6 +9,7 @@ import * as path from './filesystem/pathResolver';
 import {Graph} from "./graph/graph";
 import * as filesystem from "./filesystem/fileoperations";
 import { File } from "./graph/graphJson"
+import * as setup from './archlens/setupArchlens';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -28,6 +29,19 @@ export function activate(context: vscode.ExtensionContext) {
             vscode.window.showTextDocument(uri);
         })
     );
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand('archlens-in-vscode.setupArchLens', async () => {
+            let venv = await setup.checkVenv();
+            if (!venv) return;
+            let interpreter = await setup.getInterpreter();
+            const archlens = await setup.checkArchlens(interpreter);
+            if (!archlens) return;
+            let config = await setup.checkArchlensConfig();
+            if (!config) return;
+            vscode.window.showInformationMessage("Archlens setup complete!")
+        }
+    ));
 
 	context.subscriptions.push(
         vscode.commands.registerCommand('archlens-in-vscode.openGraphView', async () => {
