@@ -18,16 +18,6 @@ export function ArchLens(extensionPath : vscode.Uri): vscode.Uri {
     return vscode.Uri.joinPath(extensionPath, '..', 'ArchLens');
 }
 
-export function Python(extensionPath: vscode.Uri): vscode.Uri {
-    
-    const pythonPath = process.platform === "win32" ?
-    '.venv/Scripts/python.exe' : '.venv/bin/python';
-
-    const fullPythonPath = vscode.Uri.joinPath(extensionPath, "..", 'ArchLens', pythonPath);
-
-    return fullPythonPath;
-}
-
 export function toArchlensPath(pythonPath: string): string {
     const dir = path.dirname(pythonPath);
     const ext = path.extname(pythonPath);
