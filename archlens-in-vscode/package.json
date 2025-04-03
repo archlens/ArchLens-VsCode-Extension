@@ -27,6 +27,10 @@
       {
         "command": "archlens-in-vscode.openFile",
         "title": "Open File"
+      },
+      {
+        "command": "archlens-in-vscode.setupArchLens",
+        "title": "Set up ArchLens"
       }
     ],
     "views": {
