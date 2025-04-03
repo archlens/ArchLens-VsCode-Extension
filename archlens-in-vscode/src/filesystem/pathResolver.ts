@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import * as path from 'path';
 
 export const WorkspaceRoot : vscode.Uri = vscode.workspace.workspaceFolders?.[0]?.uri!;
 
@@ -25,4 +26,12 @@ export function Python(extensionPath: vscode.Uri): vscode.Uri {
     const fullPythonPath = vscode.Uri.joinPath(extensionPath, "..", 'ArchLens', pythonPath);
 
     return fullPythonPath;
+}
+
+export function toArchlensPath(pythonPath: string): string {
+    const dir = path.dirname(pythonPath);
+    const ext = path.extname(pythonPath);
+    
+    const archlensFilename = `archlens${ext}`;
+    return path.join(dir, archlensFilename);
 }
