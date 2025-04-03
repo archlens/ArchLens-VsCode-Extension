@@ -2,7 +2,8 @@ import * as path from '../filesystem/pathResolver';
 import * as vs from 'vscode';
 import * as fs from 'fs';
 import * as cp from 'child_process';
-import { isVenv } from '../filesystem/fileoperations';
+import { isVenv,  } from '../filesystem/fileoperations';
+import { ArchLensConfig } from '../filesystem/pathResolver';
 import { create } from 'domain';
 
 export async function getInterpreter() : Promise<any> {
@@ -27,6 +28,30 @@ export async function getArchlensPath(interpreter : any) : Promise<string> {
         await installArchlens(pythonPath, interpreter);
     }
     return path.toArchlensPath(pythonPath);
+}
+
+export async function checkForArchlensConfig() : Promise<void> {
+    if (!fs.existsSync(ArchLensConfig.fsPath)) {
+        vs.window.showInformationMessage("Archlens config not found, would you like to create it?", "Create", "Cancel").then(async (value) => {
+            if(value === "Create") {
+                const interpreter = await getInterpreter();
+                const archlensPath = await getArchlensPath(interpreter);
+                const command = [
+                    "init",
+                    "--config-path=" + ArchLensConfig.fsPath
+                ]
+
+                cp.execFile(archlensPath, command, { env: interpreter.getExecutionDetails }, (err, stdout, stderr) => {
+                    if (err) {
+                        vs.window.showErrorMessage(`Error creating Archlens config: ${stderr}`);
+                        console.error(err);
+                    } else {
+                        vs.window.showInformationMessage(`Archlens config created: ${stdout}`);
+                    }
+                })
+            }
+        })
+    }
 }
 
 async function installArchlens(pythonPath : string, interpreter : any) : Promise<void> {
