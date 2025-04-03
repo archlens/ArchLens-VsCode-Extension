@@ -173,6 +173,12 @@ window.addEventListener('message', event => {
         case 'update_views':
             update_views(message.views);
             break;
+        case 'updating_graph':
+            showInfoBox('Updating graph...');
+            break;
+        case 'graph_updated':
+            showInfoBox('Graph updated!');
+            break;
     }
 });
 
@@ -190,3 +196,29 @@ diffViewCheckBox.addEventListener('change', (event) => {
 
     console.log(diffView);
 });
+
+let timer = null;
+
+function showInfoBox(message) {
+    closeInfoBox();
+    let box = document.getElementById("infoBox");
+    let boxInner = document.getElementById("infoBoxText");
+    boxInner.innerHTML = message;
+    box.classList.add("show");
+
+    if (timer) {
+        clearTimeout(timer);
+    }
+
+    timer = setTimeout(() => {
+        closeInfoBox();
+        timer = null;
+    }, 10000);
+}
+
+function closeInfoBox() {
+    let box = document.getElementById("infoBox");
+    box.classList.remove("show");
+}
+
+document.getElementById("closeInfoBox").addEventListener("click", function() {closeInfoBox();});
