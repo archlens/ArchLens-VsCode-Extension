@@ -125,11 +125,10 @@ function make_graph(elements){
     cy.on('tap', 'edge', function(evt) {
         var edge = evt.target;
         vscode.postMessage({command: 'edge_clicked', edgeID: edge.id()});
-        
     });
 
     function updateLabelStyles(zoom) {
-        if (zoom < 1.1) {
+        if (zoom < 1.2) {
             cy.style()
                 .selector('edge[label]')
                 .style({
