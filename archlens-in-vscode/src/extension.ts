@@ -47,8 +47,6 @@ export function activate(context: vscode.ExtensionContext) {
                 }
             );
 
-            process.env.NODE_ENV = 'production';
-
             panel.webview.html = WebviewHTMLTemplate(panel.webview, context.extensionUri);
 
 
