@@ -11,6 +11,7 @@ header {
     width: 100%; 
     height: 60px; 
     background-color: rgba(0, 0, 0, 0.6);
+    padding: 0 20px;
 }
 
 #graph {
@@ -37,12 +38,34 @@ header {
 
 .select-wrapper {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 3fr 1fr;
     justify-content: center;
+    align-items: center;
     gap: 10px;
     width: 100%;
 }
 
-.right {
-    justify-content: right;
+#view-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.view-button {
+    border: unset;
+    padding: 5px 10px;
+    transition-duration: 0.3s;
+    border-radius: 3px;
+}
+
+.view-button:hover {
+    background-color: rgba(255, 255, 255, 0.40);
+    cursor: pointer;
+    color: #fff;
+
+}
+
+.active {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #fff;
 }

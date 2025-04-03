@@ -1,31 +1,47 @@
 const vscode = acquireVsCodeApi();
 
-const viewSelect = document.getElementById('view-selector');
+const viewButtons = document.getElementById('view-buttons');
 const diffViewCheckBox = document.getElementById('diff-view-checkbox');
 
 let diffView = false;
-let view;
+let current_view;
 
 function update_view(view, diffView = false, reload = false) {
     vscode.postMessage({ command: 'get_view', view: view, diffView: diffView, reload: reload })
 }
 
 function update_views(views) {
-    view = views[0];
+    current_view = views[0];
 
     const viewOptions = views.map(
-        element => {
-        let option = document.createElement('option')
+        view => {
 
-        option.setAttribute('value', element)
-        option.innerHTML = element;
+        let option = document.createElement('button');
+
+        option.addEventListener('click', () => {
+            Array.from(viewButtons.children).forEach(viewButton => {
+                viewButton.classList.remove('active')
+            });
+
+            option.classList.add('active');
+
+            update_view(view);
+        });
+
+        option.innerHTML = view;
+        option.classList.add('view-button');
+
+
+        if(view === current_view) {
+            option.classList.add('active');
+        }
 
         return option;
     });
 
-    viewSelect.replaceChildren(...viewOptions);
+    viewButtons.replaceChildren(...viewOptions);
 
-    update_view(view, diffView, true);
+    update_view(current_view, diffView, true);
 }
 
 function getLabelLength(node){
@@ -162,7 +178,7 @@ window.addEventListener('message', event => {
 
 await vscode.postMessage({command: 'get_views'});
 
-viewSelect.addEventListener('input', (event) => {
+viewButtons.addEventListener('input', (event) => {
     const view = event.target.value;
     update_view(view, diffView);
 });
@@ -170,7 +186,7 @@ viewSelect.addEventListener('input', (event) => {
 diffViewCheckBox.addEventListener('change', (event) => {
     diffView = event.target.checked;
 
-    update_view(view, diffView, true)
+    update_view(current_view, diffView, true)
 
     console.log(diffView);
 });
