@@ -120,7 +120,7 @@ async function updateGraph(
     diffView = false, 
     reload: boolean = false
 ) : Promise<Graph> {
-    vscode.window.showInformationMessage("Reloading graph...");
+    panel.webview.postMessage({ command: "updating_graph" });
     
     let config = JSON.parse(await filesystem.readJSON(path.ArchLensConfig));
     let project = config.name;
@@ -144,7 +144,8 @@ async function updateGraph(
         view: view
     })
 
-    vscode.window.showInformationMessage("Graph reloaded!", );
+    panel.webview.postMessage({ command: "graph_updated" });
+
 
     return graph;
 }
