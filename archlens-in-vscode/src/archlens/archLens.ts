@@ -2,11 +2,12 @@ import * as cp from 'child_process';
 import * as file from '../filesystem/fileoperations';
 import * as vs from 'vscode';
 import * as path from '../filesystem/pathResolver';
+import * as setup from './setupArchlens';
 
 export async function getGraphJson(graphPath: vs.Uri, extensionPath: vs.Uri, diffView : boolean, reload: boolean): Promise<string> {
 
     if(reload) {
-        await spawnArchLens(extensionPath, diffView);
+        await spawnArchLens(diffView);
 
         console.log("Reloading graph")
     }
@@ -17,7 +18,7 @@ export async function getGraphJson(graphPath: vs.Uri, extensionPath: vs.Uri, dif
         json = await file.readJSON(graphPath);
     } catch(error) {
         if (error instanceof vs.FileSystemError) {
-            await spawnArchLens(extensionPath, diffView);
+            await spawnArchLens(diffView);
             json = await file.readJSON(graphPath)
         }
     }
@@ -25,27 +26,18 @@ export async function getGraphJson(graphPath: vs.Uri, extensionPath: vs.Uri, dif
     return json;
 }
 
-async function spawnArchLens(extensionPath : vs.Uri, diffView : boolean): Promise<void> {
-
-    const pythonExt = vs.extensions.getExtension('ms-python.python');
-
-    if(!pythonExt) {
-        vs.window.showErrorMessage("Could not find Python Extension")
-    }
-
-    const pythonApi = pythonExt!.exports;
-    const interpreter = await pythonApi.settings.getExecutionDetails();
-    const pythonPath = interpreter.execCommand?.[0];
+async function spawnArchLens(diffView : boolean): Promise<void> {
+    const interpreter = await setup.getInterpreter();
+    const archlensPath = await setup.getArchlensPath(interpreter);
 
     const diffViewModifier = diffView ? "diff-" : "";
 
     const command = [
-        'archlens',
         `render-${diffViewModifier}json`,
         "--config-path=" + path.ArchLensConfig.fsPath
     ]
 
-    cp.execFile(pythonPath, command, { env: interpreter.getExecutionDetails }, (err, stdout, stderr) => {
+    cp.execFile(archlensPath, command, { env: interpreter.getExecutionDetails }, (err, stdout, stderr) => {
         if (err) {
             vs.window.showErrorMessage(`Error running archlens: ${stderr}`);
             console.error(err);
