@@ -3,13 +3,15 @@ import { showTreeView } from './views/FileTreeView';
 import {Graph} from "./graph/graph";
 import { File } from "./graph/graphJson"
 import * as setup from './archlens/setupArchlens';
-import { WebviewService } from './webview/webviewService';
+import { WebviewService } from './services/webviewService';
 import { GraphService } from './services/graphService';
+import { GraphViewService } from './services/graphViewService';
 
 export function activate(context: vscode.ExtensionContext) {
 
     const webviewService = new WebviewService(context);
     const graphService = new GraphService(context);
+    const graphViewservice = new GraphViewService(webviewService, graphService);
 
     context.subscriptions.push(
         vscode.commands.registerCommand('archlens-in-vscode.openFile', (file: File) => {
@@ -49,19 +51,19 @@ export function activate(context: vscode.ExtensionContext) {
                 view = message.view;
                 diffView = message.diffView;
 
-                g = await updateGraph(view, webviewService, graphService, diffView, message.reload);
+                g = await graphViewservice.updateGraph(view, diffView, message.reload);
             });
 
             webviewService.registerMessageHandler('get_views', async (message) => {
-                await getViews(webviewService, graphService);
+                await graphViewservice.getViews(webviewService, graphService);
             });
             
             let saveEventHandler = vscode.workspace.onDidSaveTextDocument(async (_) => {
-                g = await updateGraph(view, webviewService, graphService, diffView, true);
+                g = await graphViewservice.updateGraph(view, diffView, true);
             });
 
             let deleteFileEventHandler = vscode.workspace.onDidDeleteFiles(async (_) => {
-                g = await updateGraph(view,webviewService, graphService, diffView, true);
+                g = await graphViewservice.updateGraph(view, diffView, true);
             });
           
             context.subscriptions.push(saveEventHandler, deleteFileEventHandler);
@@ -72,37 +74,6 @@ export function activate(context: vscode.ExtensionContext) {
             });
         })
     );
-}
-
-
-
-async function getViews(webviewService: WebviewService, graphService: GraphService): Promise<void> {
-    const views = await graphService.getViews();
-
-    webviewService.sendMessage({ command: "update_views",
-        views: views 
-    })
-}
-
-async function updateGraph(
-    view: string, 
-    webviewService: WebviewService, 
-    graphService: GraphService,
-    diffView = false, 
-    reload: boolean = false
-): Promise<Graph> {
-    webviewService.sendMessage({ command: "updating_graph" });
-    
-    const graph = await graphService.getGraph(view, diffView, reload);
-
-    webviewService.sendMessage({ 
-        command: "update_graph",
-        graph: graph.toList(),
-    });
-
-    webviewService.sendMessage({ command: "graph_updated" });
-
-    return graph;
 }
 
 export function deactivate() {}
