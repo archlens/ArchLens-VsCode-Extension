@@ -10,6 +10,7 @@ import {Graph} from "./graph/graph";
 import * as filesystem from "./filesystem/fileoperations";
 import { File } from "./graph/graphJson"
 import * as setup from './archlens/setupArchlens';
+import { GraphService } from './services/graphService';
 
 export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
@@ -97,8 +98,6 @@ export function activate(context: vscode.ExtensionContext) {
     );
 }
 
-
-
 async function getViews(panel : vscode.WebviewPanel) {
     let config = JSON.parse(await filesystem.readJSON(path.ArchLensConfig));
 
@@ -123,23 +122,6 @@ async function updateGraph(
     reload: boolean = false
 ) : Promise<Graph> {
     panel.webview.postMessage({ command: "updating_graph" });
-    
-    let config = JSON.parse(await filesystem.readJSON(path.ArchLensConfig));
-    let project = config.name;
-    let saveLocation = config.saveLocation ?? "./diagrams";
-
-    let graph = graph_util.buildGraph(await archlens.getGraphJson(
-            path.GraphJson(
-                view, 
-                diffView,
-                project, 
-                saveLocation
-            ), 
-            context.extensionUri,
-            diffView,
-            reload
-        )
-    );
 
     panel.webview.postMessage({ command: "update_graph",
         graph: graph.toList(),
