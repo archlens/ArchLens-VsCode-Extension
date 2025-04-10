@@ -25,7 +25,7 @@ function update_views(views) {
 
             option.classList.add('active');
 
-            update_view(view);
+            update_view(view, diffView);
         });
 
         option.innerHTML = view;

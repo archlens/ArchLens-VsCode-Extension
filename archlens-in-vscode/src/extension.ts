@@ -60,7 +60,7 @@ export function activate(context: vscode.ExtensionContext) {
             });
 
             webviewService.registerMessageHandler('get_views', async (message) => {
-                const views = await getViews(webviewService, graphService);
+                await getViews(webviewService, graphService);
             });
             
             let saveEventHandler = vscode.workspace.onDidSaveTextDocument(async (_) => {

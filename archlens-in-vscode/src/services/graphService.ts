@@ -14,7 +14,7 @@ export class GraphService {
     }
 
     public async getGraph(viewName: string, diffView: boolean, reload: boolean = false) : Promise<Graph> {
-        const config = JSON.parse(await filesystem.readJSON(path.ArchLensConfig));
+        const config = await this.getConfig();
         const project = config.name;
         const saveLocation = config.saveLocation ?? "./diagrams";
         
@@ -25,7 +25,7 @@ export class GraphService {
     }
 
     public async getViews() {
-        const config = JSON.parse(await filesystem.readJSON(path.ArchLensConfig));
+        const config = await this.getConfig();
         const viewsMap = config.views;
         const views: Array<string> = []
     
