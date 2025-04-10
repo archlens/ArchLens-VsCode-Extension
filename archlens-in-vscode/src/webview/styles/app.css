@@ -9,9 +9,8 @@ header {
     justify-content: center;
     align-items: center;
     width: 100%; 
-    height: 60px; 
     background-color: rgba(0, 0, 0, 0.6);
-    padding: 0 20px;
+    padding: 20px 20px;
 }
 
 #graph {
