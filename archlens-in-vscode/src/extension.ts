@@ -1,13 +1,6 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import { WebviewHTMLTemplate } from './views/webviewHTMLTemplate';
-import * as graph_util from "./graph/graphGeneration";
 import { showTreeView } from './views/FileTreeView';
-import * as archlens from './archlens/archLens';
-import * as path from './filesystem/pathResolver';
 import {Graph} from "./graph/graph";
-import * as filesystem from "./filesystem/fileoperations";
 import { File } from "./graph/graphJson"
 import * as setup from './archlens/setupArchlens';
 import { WebviewService } from './webview/webviewService';
