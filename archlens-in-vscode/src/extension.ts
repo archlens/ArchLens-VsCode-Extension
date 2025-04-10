@@ -53,16 +53,14 @@ export function activate(context: vscode.ExtensionContext) {
                     enableScripts: true,
                     retainContextWhenHidden: true,
                     localResourceRoots: [
-                        vscode.Uri.joinPath(context.extensionUri, "..", "webview"),
-                        vscode.Uri.joinPath(context.extensionUri, "..", "webview", "scripts"),
-                        vscode.Uri.joinPath(context.extensionUri, "..", "webview", "styles"),
-                        vscode.Uri.joinPath(context.extensionUri, "..", "webview", "node_modules")
-                      ]
+                        vscode.Uri.joinPath(context.extensionUri, "out", "webview"),
+                        vscode.Uri.joinPath(context.extensionUri, "out", "webview", "scripts"),
+                        vscode.Uri.joinPath(context.extensionUri, "out", "webview", "styles"),
+                    ]
                 }
             );
 
-            panel.webview.html = WebviewHTMLTemplate(panel.webview, context.extensionUri);
-
+            panel.webview.html = WebviewHTMLTemplate(panel.webview, context);
 
             let g : Graph | undefined = undefined;
             let view = "";
@@ -134,7 +132,7 @@ async function updateGraph(
     diffView = false, 
     reload: boolean = false
 ) : Promise<Graph> {
-    vscode.window.showInformationMessage("Reloading graph...");
+    panel.webview.postMessage({ command: "updating_graph" });
     
     let config = JSON.parse(await filesystem.readJSON(path.ArchLensConfig));
     let project = config.name;
@@ -158,7 +156,8 @@ async function updateGraph(
         view: view
     })
 
-    vscode.window.showInformationMessage("Graph reloaded!", );
+    panel.webview.postMessage({ command: "graph_updated" });
+
 
     return graph;
 }

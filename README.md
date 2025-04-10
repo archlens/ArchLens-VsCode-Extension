@@ -16,6 +16,16 @@ To be able to develop the extension, you need to have python installed. This pyt
 with ArchLens. Refer to the [ArchLens](https://github.com/archlens/ArchLens/blob/master/README.md) 
 documentation to read more.
 
+### Publishing extension
+
+Bundle the extension into a .vsix file
+
+    vsce package
+
+#### Installing extension
+
+    --install-extension archlens-in-vscode-<version>.vsix
+
 #### Set up Python environment
 
 Set up your python virtual environment in ArchLens

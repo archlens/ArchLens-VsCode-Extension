@@ -69,3 +69,33 @@ header {
     background-color: rgba(255, 255, 255, 0.2);
     color: #fff;
 }
+
+
+.info-box {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #424242;
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    display: none;
+    transition: opacity 0.5s ease;
+}
+
+.info-box.show {
+    display: flex;
+    flex-direction: row;
+    opacity: 1;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-left: 10px;
+}

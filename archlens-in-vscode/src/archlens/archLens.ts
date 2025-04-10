@@ -37,12 +37,5 @@ async function spawnArchLens(diffView : boolean): Promise<void> {
         "--config-path=" + path.ArchLensConfig.fsPath
     ]
 
-    cp.execFile(archlensPath, command, { env: interpreter.getExecutionDetails }, (err, stdout, stderr) => {
-        if (err) {
-            vs.window.showErrorMessage(`Error running archlens: ${stderr}`);
-            console.error(err);
-        } else {
-            vs.window.showInformationMessage(`Archlens output: ${stdout}`);
-        }
-    })
+    cp.execFileSync(archlensPath, command, { env: interpreter.getExecutionDetails })
 }

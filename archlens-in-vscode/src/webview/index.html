@@ -3,8 +3,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">  
     <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
-    <script src="{baseUri}/node_modules/dagre/dist/dagre.js"></script>
-    <script src="{baseUri}/node_modules/cytoscape-dagre/cytoscape-dagre.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dagre/0.8.5/dagre.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cytoscape-dagre@2.5.0/cytoscape-dagre.min.js"></script>
     <link rel="stylesheet" href="{baseUri}/styles/app.css">
 </head>
 <body>
@@ -23,4 +23,9 @@
     </header>
     <div id="graph"></div>
     <script type="module" src="{baseUri}/scripts/graph.js"></script>
+
+    <div id="infoBox" class="info-box">
+        <div id = "infoBoxText"></div>
+        <button id = "closeInfoBox" class="close-btn">✖</button>
+    </div>
 </body>
