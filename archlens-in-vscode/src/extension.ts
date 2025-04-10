@@ -11,18 +11,7 @@ import * as filesystem from "./filesystem/fileoperations";
 import { File } from "./graph/graphJson"
 import * as setup from './archlens/setupArchlens';
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "archlens-in-vscode" is now active!');
-
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-
     context.subscriptions.push(
         vscode.commands.registerCommand('archlens-in-vscode.openFile', (file: File) => {
             const uri = vscode.Uri.file(file.path);
@@ -106,8 +95,9 @@ export function activate(context: vscode.ExtensionContext) {
             });
         })
     );
-
 }
+
+
 
 async function getViews(panel : vscode.WebviewPanel) {
     let config = JSON.parse(await filesystem.readJSON(path.ArchLensConfig));
