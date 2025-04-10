@@ -10,9 +10,14 @@ import {Graph} from "./graph/graph";
 import * as filesystem from "./filesystem/fileoperations";
 import { File } from "./graph/graphJson"
 import * as setup from './archlens/setupArchlens';
+import { WebviewService } from './webview/webviewService';
 import { GraphService } from './services/graphService';
 
 export function activate(context: vscode.ExtensionContext) {
+
+    const webviewService = new WebviewService(context);
+    const graphService = new GraphService(context);
+
     context.subscriptions.push(
         vscode.commands.registerCommand('archlens-in-vscode.openFile', (file: File) => {
             const uri = vscode.Uri.file(file.path);
@@ -35,57 +40,35 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(
         vscode.commands.registerCommand('archlens-in-vscode.openGraphView', async () => {
-            const panel = vscode.window.createWebviewPanel(
-                'GraphView',
-                'Graph-view',
-                vscode.ViewColumn.Two,
-                {
-                    enableScripts: true,
-                    retainContextWhenHidden: true,
-                    localResourceRoots: [
-                        vscode.Uri.joinPath(context.extensionUri, "out", "webview"),
-                        vscode.Uri.joinPath(context.extensionUri, "out", "webview", "scripts"),
-                        vscode.Uri.joinPath(context.extensionUri, "out", "webview", "styles"),
-                    ]
-                }
-            );
-
-            panel.webview.html = WebviewHTMLTemplate(panel.webview, context);
+            
+            const panel = webviewService.createWebView();
 
             let g : Graph | undefined = undefined;
             let view = "";
             let diffView = false;
 
-            // Handle messages from the webview
-            panel.webview.onDidReceiveMessage(
-                async message => {
-                switch (message.command) {
-                    case 'edge_clicked':
-                        const edge = g!.getEdgeFromID(message.edgeID);
-                        showTreeView(context, edge!);
-                        break;
-                    case 'get_view':
-                        view = message.view;
-                        diffView = message.diffView;
+            webviewService.registerMessageHandler('edge_clicked', async (message) => {
+                const edge = g!.getEdgeFromID(message.edgeID);
+                showTreeView(context, edge!);
+            });
 
-                        g = await updateGraph(view, context, panel, diffView, message.reload);
-                        break;
-                    case 'get_views':
-                        getViews(panel);
-                        break;
-                }
-                },
-                undefined,
-                context.subscriptions
-            );  
+            webviewService.registerMessageHandler('get_view', async (message) => {
+                view = message.view;
+                diffView = message.diffView;
 
+                g = await updateGraph(view, webviewService, graphService, diffView, message.reload);
+            });
+
+            webviewService.registerMessageHandler('get_views', async (message) => {
+                const views = await getViews(webviewService, graphService);
+            });
             
             let saveEventHandler = vscode.workspace.onDidSaveTextDocument(async (_) => {
-                g = await updateGraph(view, context, panel, diffView, true);
+                g = await updateGraph(view, webviewService, graphService, diffView, true);
             });
 
             let deleteFileEventHandler = vscode.workspace.onDidDeleteFiles(async (_) => {
-                g = await updateGraph(view, context, panel, diffView, true);
+                g = await updateGraph(view,webviewService, graphService, diffView, true);
             });
           
             context.subscriptions.push(saveEventHandler, deleteFileEventHandler);
@@ -98,38 +81,33 @@ export function activate(context: vscode.ExtensionContext) {
     );
 }
 
-async function getViews(panel : vscode.WebviewPanel) {
-    let config = JSON.parse(await filesystem.readJSON(path.ArchLensConfig));
 
-    let viewsMap = config.views;
-    let views : Array<string> = []
 
-    // projectname-viewname.json
-    for(let [viewName, view] of Object.entries(viewsMap)) {
-        views.push(viewName);
-    }
-    
-    panel.webview.postMessage({ command: "update_views",
-        views: views
+async function getViews(webviewService: WebviewService, graphService: GraphService): Promise<void> {
+    const views = await graphService.getViews();
+
+    webviewService.sendMessage({ command: "update_views",
+        views: views 
     })
 }
 
 async function updateGraph(
-    view : string, 
-    context : vscode.ExtensionContext, 
-    panel : vscode.WebviewPanel, 
+    view: string, 
+    webviewService: WebviewService, 
+    graphService: GraphService,
     diffView = false, 
     reload: boolean = false
-) : Promise<Graph> {
-    panel.webview.postMessage({ command: "updating_graph" });
+): Promise<Graph> {
+    webviewService.sendMessage({ command: "updating_graph" });
+    
+    const graph = await graphService.getGraph(view, diffView, reload);
 
-    panel.webview.postMessage({ command: "update_graph",
+    webviewService.sendMessage({ 
+        command: "update_graph",
         graph: graph.toList(),
-        view: view
-    })
+    });
 
-    panel.webview.postMessage({ command: "graph_updated" });
-
+    webviewService.sendMessage({ command: "graph_updated" });
 
     return graph;
 }

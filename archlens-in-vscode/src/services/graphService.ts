@@ -24,6 +24,19 @@ export class GraphService {
         return graph_util.buildGraph(graphJson);
     }
 
+    public async getViews() {
+        const config = JSON.parse(await filesystem.readJSON(path.ArchLensConfig));
+        const viewsMap = config.views;
+        const views: Array<string> = []
+    
+        // projectname-viewname.json
+        for(let [viewName, view] of Object.entries(viewsMap)) {
+            views.push(viewName);
+        }
+
+        return views;
+    }
+
     private async getConfig(): Promise<any> {
         return JSON.parse(await filesystem.readJSON(path.ArchLensConfig));
     }
