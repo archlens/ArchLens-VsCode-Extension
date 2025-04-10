@@ -8,7 +8,7 @@ import * as archlens from './archlens/archLens';
 import * as path from './filesystem/pathResolver';
 import {Graph} from "./graph/graph";
 import * as filesystem from "./filesystem/fileoperations";
-import { File } from "./graph/graphJson"
+import { File } from "./graph/graphJson";
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -39,16 +39,14 @@ export function activate(context: vscode.ExtensionContext) {
                     enableScripts: true,
                     retainContextWhenHidden: true,
                     localResourceRoots: [
-                        vscode.Uri.joinPath(context.extensionUri, "..", "webview"),
-                        vscode.Uri.joinPath(context.extensionUri, "..", "webview", "scripts"),
-                        vscode.Uri.joinPath(context.extensionUri, "..", "webview", "styles"),
-                        vscode.Uri.joinPath(context.extensionUri, "..", "webview", "node_modules")
-                      ]
+                        vscode.Uri.joinPath(context.extensionUri, "out", "webview"),
+                        vscode.Uri.joinPath(context.extensionUri, "out", "webview", "scripts"),
+                        vscode.Uri.joinPath(context.extensionUri, "out", "webview", "styles"),
+                    ]
                 }
             );
 
-            panel.webview.html = WebviewHTMLTemplate(panel.webview, context.extensionUri);
-
+            panel.webview.html = WebviewHTMLTemplate(panel.webview, context);
 
             let g : Graph | undefined = undefined;
             let view = "";
