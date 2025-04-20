@@ -30,7 +30,7 @@ Then, you can bundle the extension into a .vsix file using:
 
 #### Installing extension
 
-   code --install-extension archlens-in-vscode-<version>.vsix
+   code --install-extension archlens-in-vscode-<VERSION>.vsix
 
 #### Set up Python environment
 
