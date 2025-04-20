@@ -24,7 +24,7 @@ Bundle the extension into a .vsix file
 
 #### Installing extension
 
-    --install-extension archlens-in-vscode-<version>.vsix
+   code --install-extension archlens-in-vscode-<version>.vsix
 
 #### Set up Python environment
 
