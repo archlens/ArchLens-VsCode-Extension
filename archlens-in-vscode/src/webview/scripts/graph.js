@@ -176,9 +176,10 @@ window.addEventListener('message', event => {
             break;
         case 'updating_graph':
             disableViewButtons();
-            showInfoBox('Updating graph...');
+            showInfoBox('Updating graph... This might take a while');
             break;
         case 'graph_updated':
+            showInfoBox('Graph Updated!', true);
             enableViewButtons();
             break;
     }
