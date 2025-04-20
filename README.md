@@ -18,7 +18,13 @@ documentation to read more.
 
 ### Publishing extension
 
-Bundle the extension into a .vsix file
+#### Install the VSCode extension bundler
+
+To be able to package the extension, you need to have NPM installed, and install the VSCode extension bundler with the command:
+
+    npm install -g @vscode/vsce
+
+Then, you can bundle the extension into a .vsix file using:
 
     vsce package
 

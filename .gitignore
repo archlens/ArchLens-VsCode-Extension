@@ -8,6 +8,8 @@ lerna-debug.log*
 .pnpm-debug.log*
 
 ArchLens_Preview.egg-info/*
+archlens-in-vscode*
+
 .idea/*
 .venv
 
