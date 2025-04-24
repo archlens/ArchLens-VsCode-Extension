@@ -176,11 +176,11 @@ window.addEventListener('message', event => {
             break;
         case 'updating_graph':
             disableViewButtons();
-            showInfoBox('Updating graph... This might take a while');
+            showInfoBox('Updating graph... This might a while');
             break;
         case 'graph_updated':
-            showInfoBox('Graph Updated!', true);
             enableViewButtons();
+            showInfoBox('Graph updated.', true);
             break;
     }
 });
