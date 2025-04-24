@@ -16,7 +16,7 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
         vscode.commands.registerCommand('archlens-in-vscode.openFile', (file: File) => {
             const uri = vscode.Uri.file(file.path);
-            vscode.window.showTextDocument(uri);
+            vscode.window.showTextDocument(uri, {viewColumn: vscode.ViewColumn.One});
         })
     );
 

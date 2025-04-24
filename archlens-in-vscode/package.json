@@ -21,8 +21,8 @@
                 "title": "ArchLens: Open Graph"
             },
             {
-                "command": "archlens-in-vscode.openFile",
-                "title": "ArchLens: Open File"
+                "command": "archlens-in-vscode.setupArchLens",
+                "title": "ArchLens: Setup ArchLens"
             }
         ],
         "views": {
