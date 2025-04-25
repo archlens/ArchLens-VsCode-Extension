@@ -11,10 +11,10 @@ export class GraphViewService {
         this.graphService = graphService;
     }
 
-    async getViews(webviewService: WebviewService, graphService: GraphService): Promise<void> {
-        const views = await graphService.getViews();
+    async getViews(): Promise<void> {
+        const views = await this.graphService.getViews();
     
-        webviewService.sendMessage({ command: "update_views",
+        this.webviewService.sendMessage({ command: "update_views",
             views: views 
         })
     }

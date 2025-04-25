@@ -1,45 +1,50 @@
 const vscode = acquireVsCodeApi();
 
-const viewButtons = document.getElementById('view-buttons');
+const viewButtonsWrapper = document.getElementById('view-buttons');
 const diffViewCheckBox = document.getElementById('diff-view-checkbox');
+const infoBox = document.getElementById("infoBox");
+const infoBoxText = document.getElementById("infoBoxText");
 
 let diffView = false;
-let current_view;
+let current_view = undefined;
+let views = [];
+let viewButtons = [];
 
 function update_view(view, diffView = false, reload = false) {
     vscode.postMessage({ command: 'get_view', view: view, diffView: diffView, reload: reload })
 }
 
-function update_views(views) {
-    current_view = views[0];
+function update_views(newViews) {
+    views = newViews;
 
-    const viewOptions = views.map(
-        view => {
+    if(current_view === undefined) {
+        current_view = views[0];
+    }
 
-        let option = document.createElement('button');
+    viewButtons = views.map(view => {
+        let viewButton = document.createElement('button');
 
-        option.addEventListener('click', () => {
-            Array.from(viewButtons.children).forEach(viewButton => {
-                viewButton.classList.remove('active')
+        viewButton.addEventListener('click', () => {
+            viewButtons.forEach(button => {
+                button.classList.remove('active')
             });
 
-            option.classList.add('active');
+            viewButton.classList.add('active');
 
             update_view(view, diffView);
         });
 
-        option.innerHTML = view;
-        option.classList.add('view-button');
-
+        viewButton.innerHTML = view;
+        viewButton.classList.add('view-button');
 
         if(view === current_view) {
-            option.classList.add('active');
+            viewButton.classList.add('active');
         }
 
-        return option;
+        return viewButton;
     });
 
-    viewButtons.replaceChildren(...viewOptions);
+    viewButtonsWrapper.replaceChildren(...viewButtons);
 
     update_view(current_view, diffView, true);
 }
@@ -168,41 +173,30 @@ window.addEventListener('message', event => {
     const message = event.data;
     switch (message.command){
         case 'update_graph':
+            disableViewButtons(true);
             make_graph(message.graph);
-            enableViewButtons();
             break;
         case 'update_views':
             update_views(message.views);
             break;
         case 'updating_graph':
-            disableViewButtons();
-            showInfoBox('Updating graph... This might a while');
+            disableViewButtons(true);
+            showInfoBox('Updating graph... This might take a while');
             break;
         case 'graph_updated':
-            enableViewButtons();
+            disableViewButtons(false);
             showInfoBox('Graph updated.', true);
             break;
     }
-});
-
-await vscode.postMessage({command: 'get_views'});
-
-viewButtons.addEventListener('input', (event) => {
-    buttons = Array.from(viewButtons.children);
-
-    buttons.forEach(b => b.disab)
-
-    const view = event.target.value;
-    update_view(view, diffView);
 });
 
 diffViewCheckBox.addEventListener('change', (event) => {
     diffView = event.target.checked;
 
     update_view(current_view, diffView, true)
-
-    console.log(diffView);
 });
+
+// INFOBOX
 
 let timer = null;
 
@@ -211,11 +205,9 @@ function showInfoBox(message, autoclose = false) {
         clearTimeout(timer);
         timer = null;
     }
-    
-    let box = document.getElementById("infoBox");
-    let boxInner = document.getElementById("infoBoxText");
-    boxInner.innerHTML = message;
-    box.classList.add("show");
+
+    infoBoxText.innerHTML = message;
+    infoBox.classList.add("show");
 
     if (autoclose) {
         timer = setTimeout(() => {
@@ -226,24 +218,17 @@ function showInfoBox(message, autoclose = false) {
 }
 
 function closeInfoBox() {
-    let box = document.getElementById("infoBox");
-    box.classList.remove("show");
+    infoBox.classList.remove("show");
+}
+
+function disableViewButtons(disable) {
+    viewButtons.forEach(button => {
+        button.disabled = disable;
+    });
+
+    diffViewCheckBox.disabled = disable;
 }
 
 document.getElementById("closeInfoBox").addEventListener("click", function() {closeInfoBox();});
 
-function disableViewButtons() {
-    const buttons = Array.from(viewButtons.children);
-    buttons.forEach(button => {
-        button.disabled = true;
-    });
-    diffViewCheckBox.disabled = true;
-}
-
-function enableViewButtons() {
-    const buttons = Array.from(viewButtons.children);
-    buttons.forEach(button => {
-        button.disabled = false;
-    });
-    diffViewCheckBox.disabled = false;
-}
+await vscode.postMessage({command: 'get_views'});
