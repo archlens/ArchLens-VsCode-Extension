@@ -38,9 +38,9 @@ export function activate(context: vscode.ExtensionContext) {
             
             const panel = webviewService.createWebView();
 
-            let g : Graph | undefined = undefined;
-            let view = "";
-            let diffView = false;
+            let g: Graph | undefined = undefined;
+            let view: string = "";
+            let diffView: boolean = false;
 
             webviewService.registerMessageHandler('edge_clicked', async (message) => {
                 const edge = g!.getEdgeFromID(message.edgeID);
@@ -55,10 +55,11 @@ export function activate(context: vscode.ExtensionContext) {
             });
 
             webviewService.registerMessageHandler('get_views', async (message) => {
-                await graphViewservice.getViews(webviewService, graphService);
+                await graphViewservice.getViews();
             });
             
             let saveEventHandler = vscode.workspace.onDidSaveTextDocument(async (_) => {
+                await graphViewservice.getViews();
                 g = await graphViewservice.updateGraph(view, diffView, true);
             });
 
