@@ -2,7 +2,7 @@
     "name": "archlens-in-vscode",
     "displayName": "ArchLens In VSCode",
     "description": "A Visual Studio Code extension that allows you to use ArchLens directly in your editor.",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "engines": {
         "vscode": "^1.97.0"
     },
