@@ -1,8 +1,8 @@
 {
-    "name": "archlens-in-vscode",
-    "displayName": "ArchLens In VSCode",
+    "name": "archlens-for-vscode",
+    "displayName": "ArchLens for VSCode",
     "description": "A Visual Studio Code extension that allows you to use ArchLens directly in your editor.",
-    "version": "0.1.2",
+    "version": "0.1.3",
     "engines": {
         "vscode": "^1.97.0"
     },
@@ -29,7 +29,7 @@
             "explorer": [
                 {
                     "id": "filesWithDependencyTree",
-                    "name": "Dependency Tree"
+                    "name": "Dependencies"
                 }
             ]
         }
