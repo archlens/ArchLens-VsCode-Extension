@@ -1,20 +1,51 @@
 # ArchLens For VSCode
 A Visual Studio Code extension that allows you to use ArchLens directly in your editor.
 
+## Installing the extension
+
+### VS Code's official marketplace
+
+The extension can be downloaded from [Visual Studio Codes official markeplace](https://marketplace.visualstudio.com/items?itemName=ArchLens.archlens-for-vscode).
+
+### Using the extension file
+Download the `.zip` file from GitHub.
+Unzip it, and install the extension by running the command:
+
+    code --install-extension archlens-for-vscode-<version>.vsix
+
+## Setting up the extension
+
+The extension requires you have the [official Python extension installed](https://marketplace.visualstudio.com/items?itemName=ms-python.python) for it to work.
+
+After installing the extension, you can go through a guided setup by opening VS Code's command palette using `control` + `shift` + `p`, and use the command:
+
+    ArchLens: Setup ArchLens
+
+## The extension
+
 ![diff view](./images/diff-view.png)
 ![busy view](./images/busy-view.png)
 ![normal view](./images/normal-view.png)
 
-## ArchLens
+## Developing the extension
 
-ArchLens is included as a submodule in this repository. In this way, we can use the latest version of ArchLens to
-develop the extension
+navigate to the `archlens-in-vscode` directory and use the command
+```shell
+npm install
+```
+to set up the node dependencies.
 
-### Setting up ArchLens
+### Running the extension in development mode
 
-To be able to develop the extension, you need to have python installed. This python version should be compatible
-with ArchLens. Refer to the [ArchLens](https://github.com/archlens/ArchLens/blob/master/README.md) 
-documentation to read more.
+To run the extension make sure to extension first using
+
+```shell
+npm run compile
+```
+
+Note: running the extension with `npm run watch` will work, but the graph.js will **NOT** hot reload.
+
+When the project is compiled you can run the extension by pressing `f5` in vscode. This will open a new instance of vscode where the extension is running.
 
 ### Publishing extension
 
@@ -24,80 +55,8 @@ To be able to package the extension, you need to have NPM installed, and install
 
     npm install -g @vscode/vsce
 
+#### Package the extension
+
 Then, you can bundle the extension into a .vsix file using:
 
     vsce package
-
-#### Installing extension
-
-Install the extension by running the following command:
-
-    code --install-extension archlens-for-vscode-<version>.vsix
-
-#### Set up Python environment
-
-Set up your python virtual environment in ArchLens
-
-
-
-```shell
-cd ArchLens
-python3 -m venv .venv
-```
-
-To start your virtual environment in linux use the command:
-
-```shell
-
-. .venv/bin/activate
-```
-To start your virtual environment in windows use the command:
-```shell
-cd .venv/Scripts && activate && cd ../../
-```
-
-#### Install dependencies
-
-```shell
-
-pip install -r requirements.txt
-pip install -r dev-requirements.txt
-```
-
-If you do not have `setuptools` installed, you should install
-this aswell
-
-```shell
-
-pip install setuptools
-```
-
-#### Setup development mode
-
-```shell
-
-python setup.py develop
-```
-
-Now you are ready to use ArchLens!
-
-## VsCode Extension
-The extension itself is divided into two modules:
-
-### archlens-in-vscode
-This is the backend part extension, setting up extension itself and handling the graph's datastructure and parsing.
-After cloning the repository go to the `archlens-in-vscode` directory and use the command
-```shell
-npm install
-```
-to set up the npm-project.
-
- To run the extension make sure to compile the module first using
-```shell
-npm run compile
-```
-
-When the project is compiled you can run the extension by pressing `f5` in vscode. This will open a new instance of vscode where the extension is running.
-
-### webview
-This module is responsible for the webview itself. When making changes in the webview you don't need to restart the extension.
