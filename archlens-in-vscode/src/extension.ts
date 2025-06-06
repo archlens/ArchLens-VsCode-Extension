@@ -38,12 +38,12 @@ export function activate(context: vscode.ExtensionContext) {
             
             const panel = webviewService.createWebView();
 
-            let g: Graph | undefined = undefined;
+            let graph: Graph | undefined = undefined;
             let view: string = "";
             let diffView: boolean = false;
 
             webviewService.registerMessageHandler('edge_clicked', async (message) => {
-                const edge = g!.getEdgeFromID(message.edgeID);
+                const edge = graph!.getEdgeFromID(message.edgeID);
                 showTreeView(context, edge!);
             });
 
@@ -51,7 +51,7 @@ export function activate(context: vscode.ExtensionContext) {
                 view = message.view;
                 diffView = message.diffView;
 
-                g = await graphViewservice.updateGraph(view, diffView, message.reload);
+                graph = await graphViewservice.updateGraph(view, diffView, message.reload);
             });
 
             webviewService.registerMessageHandler('get_views', async (message) => {
@@ -60,11 +60,11 @@ export function activate(context: vscode.ExtensionContext) {
             
             let saveEventHandler = vscode.workspace.onDidSaveTextDocument(async (_) => {
                 await graphViewservice.getViews();
-                g = await graphViewservice.updateGraph(view, diffView, true);
+                graph = await graphViewservice.updateGraph(view, diffView, true);
             });
 
             let deleteFileEventHandler = vscode.workspace.onDidDeleteFiles(async (_) => {
-                g = await graphViewservice.updateGraph(view, diffView, true);
+                graph = await graphViewservice.updateGraph(view, diffView, true);
             });
           
             context.subscriptions.push(saveEventHandler, deleteFileEventHandler);
