@@ -11,7 +11,7 @@ export class GraphViewService {
         this.graphService = graphService;
     }
 
-    async getViews(): Promise<void> {
+    async updateViews(): Promise<void> {
         const views = await this.graphService.getViews();
     
         this.webviewService.sendMessage({ command: "update_views",

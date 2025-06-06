@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { showTreeView } from './views/FileTreeView';
-import {Graph} from "./graph/graph";
+import { Graph } from "./graph/graph";
 import { File } from "./graph/graphJson"
 import * as setup from './archlens/setupArchlens';
 import { WebviewService } from './services/webviewService';
@@ -16,6 +16,7 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
         vscode.commands.registerCommand('archlens-in-vscode.openFile', (file: File) => {
             const uri = vscode.Uri.file(file.path);
+            
             vscode.window.showTextDocument(uri, {viewColumn: vscode.ViewColumn.One});
         })
     );
@@ -40,7 +41,7 @@ export function activate(context: vscode.ExtensionContext) {
 
             let graph: Graph | undefined = undefined;
             let view: string = "";
-            let diffView: boolean = false;
+            let diffViewEnabled: boolean = false;
 
             webviewService.registerMessageHandler('edge_clicked', async (message) => {
                 const edge = graph!.getEdgeFromID(message.edgeID);
@@ -49,22 +50,23 @@ export function activate(context: vscode.ExtensionContext) {
 
             webviewService.registerMessageHandler('get_view', async (message) => {
                 view = message.view;
-                diffView = message.diffView;
+                diffViewEnabled = message.diffView;
+                const reload = message.reload;
 
-                graph = await graphViewservice.updateGraph(view, diffView, message.reload);
+                graph = await graphViewservice.updateGraph(view, diffViewEnabled, reload);
             });
 
             webviewService.registerMessageHandler('get_views', async (message) => {
-                await graphViewservice.getViews();
+                await graphViewservice.updateViews();
             });
             
             let saveEventHandler = vscode.workspace.onDidSaveTextDocument(async (_) => {
-                await graphViewservice.getViews();
-                graph = await graphViewservice.updateGraph(view, diffView, true);
+                await graphViewservice.updateViews();
+                graph = await graphViewservice.updateGraph(view, diffViewEnabled, true);
             });
 
             let deleteFileEventHandler = vscode.workspace.onDidDeleteFiles(async (_) => {
-                graph = await graphViewservice.updateGraph(view, diffView, true);
+                graph = await graphViewservice.updateGraph(view, diffViewEnabled, true);
             });
           
             context.subscriptions.push(saveEventHandler, deleteFileEventHandler);
