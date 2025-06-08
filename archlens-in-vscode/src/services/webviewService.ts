@@ -31,7 +31,7 @@ export class WebviewService {
     public createWebView(): WebviewPanel {
         this.panel = window.createWebviewPanel(
             'GraphView',
-            'Graph-view',
+            'ArchLens',
             ViewColumn.Two,
             {
               enableScripts: true,
