@@ -130,7 +130,7 @@ function make_graph(elements){
                 }
             },
             {
-                selector: 'edge:SELECTED',
+                selector: 'edge:selected',
                 style: {
                     'line-color': 'yellow',
                     'target-arrow-color': 'yellow'
