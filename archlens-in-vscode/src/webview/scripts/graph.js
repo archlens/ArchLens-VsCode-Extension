@@ -17,7 +17,7 @@ function update_view(view, diffView = false, reload = false) {
 function update_views(newViews) {
     views = newViews;
 
-    if(current_view === undefined) {
+    if(current_view === undefined || !(views.includes(current_view))) {
         current_view = views[0];
     }
 
@@ -30,6 +30,8 @@ function update_views(newViews) {
             });
 
             viewButton.classList.add('active');
+
+            current_view = view;
 
             update_view(view, diffView);
         });
