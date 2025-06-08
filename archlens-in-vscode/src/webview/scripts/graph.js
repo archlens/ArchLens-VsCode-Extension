@@ -128,6 +128,13 @@ function make_graph(elements){
                     'background-color': '#0f0',
                     'line-color': '#0f0'
                 }
+            },
+            {
+                selector: 'edge:SELECTED',
+                style: {
+                    'line-color': 'yellow',
+                    'target-arrow-color': 'yellow'
+                }
             }
         ],
     });
