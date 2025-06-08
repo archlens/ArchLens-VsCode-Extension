@@ -73,6 +73,7 @@ export function showTreeView(context: vscode.ExtensionContext, edge : Edge) : vo
         'filesWithDependencyTree',
         {treeDataProvider: treeViewProvider},
     );
+    treeView.title = edge.fromPackage + " --> " + edge.toPackage
 
     context.subscriptions.push(treeView);
 }
