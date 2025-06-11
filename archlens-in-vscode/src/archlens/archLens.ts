@@ -36,6 +36,16 @@ async function spawnArchLens(diffView : boolean): Promise<void> {
         `render-${diffViewModifier}json`,
         "--config-path=" + path.ArchLensConfig.fsPath
     ]
-
-    cp.execFileSync(archlensPath, command, { env: interpreter.getExecutionDetails })
+    try {
+        cp.execFileSync(archlensPath, command, { env: interpreter.getExecutionDetails })
+    } catch (err : unknown) {
+        let error = err as Error;
+        await vs.window.showErrorMessage("ArchLens: ArchLens process failed", "Copy error message", "Retry").then(async (value) => {
+            if(value === "Copy error message") {
+                await vs.env.clipboard.writeText(error.message);
+            } else if (value === "Retry") {
+                await spawnArchLens(diffView);
+            }
+        });
+    }
 }
