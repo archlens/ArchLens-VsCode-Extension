@@ -3,7 +3,7 @@
     "publisher": "ArchLens",
     "displayName": "ArchLens for VS Code",
     "description": "A Visual Studio Code extension that allows you to use ArchLens directly in your editor.",
-    "version": "0.3.0",
+    "version": "0.3.1",
     "engines": {
         "vscode": "^1.97.0"
     },
