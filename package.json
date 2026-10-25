@@ -45,8 +45,8 @@
         "vscode:prepublish": "npm run compile",
         "compile": "tsc -p ./ && npm run copy-webview",
         "watch": "tsc -watch -p ./ & npm run copy-webview-watch",
-        "copy-webview": "copyfiles -u 1 \"src/webview/**/*\" out/",
-        "copy-webview-watch": "copyfiles -w -u 1 \"src/webview/**/*\" out/"
+        "copy-webview": "copyfiles -u 1 \"/webview/**/*\" out/",
+        "copy-webview-watch": "copyfiles -w -u 1 \"/webview/**/*\" out/"
     },
     "devDependencies": {
         "@types/node": "^26.6.5",
