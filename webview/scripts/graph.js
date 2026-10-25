@@ -1,3 +1,8 @@
+import cytoscape from 'cytoscape';
+import cytoscapeDagre from 'cytoscape-dagre';
+
+cytoscape.use(cytoscapeDagre);
+
 const vscode = acquireVsCodeApi();
 
 const viewButtonsWrapper = document.getElementById('view-buttons');

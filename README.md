@@ -29,23 +29,26 @@ After installing the extension, you can go through a guided setup by opening VS 
 
 ## Developing the extension
 
-navigate to the `archlens-in-vscode` directory and use the command
+First install the dependencies required by the extension:
+
 ```shell
 npm install
 ```
-to set up the node dependencies.
 
 ### Running the extension in development mode
 
-To run the extension make sure to extension first using
+To run the extension in development mode, run:
 
 ```shell
-npm run compile
+npm run watch
 ```
 
-Note: running the extension with `npm run watch` will work, but the graph.js will **NOT** hot reload.
+You can launch a sandbox version of VSCode by pressing `f5`. This will open a new instance of vscode where the extension is running.
 
-When the project is compiled you can run the extension by pressing `f5` in vscode. This will open a new instance of vscode where the extension is running.
+Some handy VSCode commands include:
+
+- Shift R: Reloads the VSCode sandbox
+- `Open Webview Developer Tools`: Opens a browser-debugger window, that can be used to debug the webview.
 
 ### Publishing extension
 

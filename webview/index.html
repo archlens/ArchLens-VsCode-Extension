@@ -1,31 +1,29 @@
 <!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
-    <script src="https://unpkg.com/cytoscape@3.32.0/dist/cytoscape.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dagre/0.8.5/dagre.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/cytoscape-dagre@2.5.0/cytoscape-dagre.min.js"></script>
-    <link rel="stylesheet" href="{baseUri}/styles/app.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="{baseUri}/">
+    <link rel="stylesheet" href="./styles/app.css">
 </head>
 <body>
     <header>
         <div class="select-wrapper">
-            <div id="view-buttons">
-            </div>
-            
+            <div id="view-buttons"></div>
             <div>
-                <label>
-                    Compare with remote:
-                </label>
+                <label for="diff-view-checkbox">Compare with remote:</label>
                 <input type="checkbox" id="diff-view-checkbox">
             </div>
         </div>
     </header>
+
     <div id="graph"></div>
-    <script type="module" src="{baseUri}/scripts/graph.js"></script>
 
     <div id="infoBox" class="info-box">
         <div id="infoBoxText"></div>
         <button id="closeInfoBox" class="close-btn">✖</button>
     </div>
+
+    <script type="module" src="./scripts/graph.js"></script>
 </body>
+</html>

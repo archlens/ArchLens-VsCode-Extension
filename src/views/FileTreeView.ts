@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import { Edge } from '../graph/graph';
-import { File, Relation } from '../graph/graphJson';
+import { Edge } from '#app/graph/graph';
+import type { File } from '#app/graph/graphJson';
 
 class TreeDataProvider implements vscode.TreeDataProvider<[File, number]> {
 

@@ -1,5 +1,5 @@
-import { ExtensionContext, WebviewPanel, Uri, ViewColumn, window} from "vscode";
-import { WebviewHTMLTemplate } from "../views/webviewHTMLTemplate";
+import { type ExtensionContext, type WebviewPanel, Uri, ViewColumn, window} from "vscode";
+import { WebviewHTMLTemplate } from "#app/views/webviewHTMLTemplate";
 
 
 export class WebviewService {
@@ -37,9 +37,9 @@ export class WebviewService {
               enableScripts: true,
               retainContextWhenHidden: true,
               localResourceRoots: [
-                Uri.joinPath(this.context.extensionUri, "out", "webview"),
-                Uri.joinPath(this.context.extensionUri, "out", "webview", "scripts"),
-                Uri.joinPath(this.context.extensionUri, "out", "webview", "styles"),
+                Uri.joinPath(this.context.extensionUri, "dist", "webview"),
+                Uri.joinPath(this.context.extensionUri, "dist", "webview", "scripts"),
+                Uri.joinPath(this.context.extensionUri, "dist", "webview", "styles"),
               ]
             }
           );

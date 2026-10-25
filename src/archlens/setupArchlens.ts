@@ -1,9 +1,9 @@
-import * as path from '../filesystem/pathResolver';
+import * as path from '#app/filesystem/pathResolver';
 import * as vs from 'vscode';
 import * as fs from 'fs';
 import * as cp from 'child_process';
-import { isVenv,  } from '../filesystem/fileoperations';
-import { ArchLensConfig } from '../filesystem/pathResolver';
+import { isVenv,  } from '#app/filesystem/fileoperations';
+import { ArchLensConfig } from '#app/filesystem/pathResolver';
 import { create } from 'domain';
 
 async function getPythonApi() : Promise<any> {

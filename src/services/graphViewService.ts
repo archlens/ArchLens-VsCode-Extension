@@ -1,6 +1,6 @@
-import { Graph } from "../graph/graph";
-import { GraphService } from "./graphService";
-import { WebviewService } from "./webviewService";
+import { Graph } from "#app/graph/graph";
+import { GraphService } from "#app/services/graphService";
+import { WebviewService } from "#app/services/webviewService";
 
 export class GraphViewService {
     private webviewService: WebviewService;
