@@ -45,13 +45,14 @@
         "vscode:prepublish": "npm run compile",
         "compile": "tsc -p ./ && npm run copy-webview",
         "watch": "tsc -watch -p ./ & npm run copy-webview-watch",
-        "copy-webview": "copyfiles -u 1 \"/webview/**/*\" out/",
-        "copy-webview-watch": "copyfiles -w -u 1 \"/webview/**/*\" out/"
+        "copy-webview": "copyfiles -u 1 \"webview/**/*\" out/",
+        "copy-webview-watch": "copyfiles -w -u 1 \"webview/**/*\" out/"
     },
     "devDependencies": {
         "@types/node": "^26.6.5",
         "@types/vscode": "^1.140.0",
         "copyfiles": "^2.4.1",
-        "typescript": "^7.0.2"
+        "typescript": "^7.0.2",
+        "vite": "^8.3.5"
     }
 }
