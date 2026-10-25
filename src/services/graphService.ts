@@ -1,9 +1,9 @@
-import { ExtensionContext } from "vscode";
-import { Graph } from "../graph/graph";
-import * as graph_util from "../graph/graphGeneration";
-import * as archLens from '../archlens/archLens';
-import * as filesystem from "../filesystem/fileoperations";
-import * as path from '../filesystem/pathResolver';
+import type { ExtensionContext } from "vscode";
+import { Graph } from "#app/graph/graph";
+import * as graph_util from "#app/graph/graphGeneration";
+import * as archLens from '#app/archlens/archLens';
+import * as filesystem from "#app/filesystem/fileoperations";
+import * as path from '#app/filesystem/pathResolver';
 
 export class GraphService {
 

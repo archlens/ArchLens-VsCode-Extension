@@ -1,11 +1,12 @@
 {
     "name": "archlens-for-vscode",
+    "type": "module",
     "publisher": "ArchLens",
     "displayName": "ArchLens for VS Code",
     "description": "A Visual Studio Code extension that allows you to use ArchLens directly in your editor.",
     "version": "0.3.1",
     "engines": {
-        "vscode": "^1.97.0"
+        "vscode": "^1.100.0"
     },
     "extensionDependencies": [
         "ms-python.python"
@@ -20,7 +21,13 @@
         "url": "https://github.com/archlens/ArchLens-VsCode-Extension"
     },
     "activationEvents": [],
-    "main": "./out/extension.js",
+    "imports": {
+        "#app/*": {
+            "types": "./src/*.ts",
+            "default": "./dist/*.js"
+        }
+    },
+    "main": "./dist/extension.js",
     "contributes": {
         "commands": [
             {
@@ -43,15 +50,17 @@
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",
-        "compile": "tsc -p ./ && npm run copy-webview",
-        "watch": "tsc -watch -p ./ & npm run copy-webview-watch",
-        "copy-webview": "copyfiles -u 1 \"src/webview/**/*\" out/",
-        "copy-webview-watch": "copyfiles -w -u 1 \"src/webview/**/*\" out/"
+        "compile": "tsc -p ./ && vite build",
+        "watch": "concurrently -n ext,web \"tsc --watch --preserveWatchOutput -p ./\" \"vite build --watch\"",
+        "typecheck:webview": "tsc -p webview --noEmit"
     },
     "devDependencies": {
         "@types/node": "^26.6.5",
-        "@types/vscode": "^1.140.0",
-        "copyfiles": "^2.4.1",
-        "typescript": "^7.0.2"
+        "@types/vscode": "~1.100.0",
+        "concurrently": "^10.0.6",
+        "cytoscape": "^3.34.4",
+        "cytoscape-dagre": "^4.0.1",
+        "typescript": "^7.0.2",
+        "vite": "^8.3.5"
     }
 }

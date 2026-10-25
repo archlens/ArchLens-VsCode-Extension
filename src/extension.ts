@@ -1,11 +1,11 @@
 import * as vscode from 'vscode';
-import { showTreeView } from './views/FileTreeView';
-import { Graph } from "./graph/graph";
-import { File } from "./graph/graphJson"
-import * as setup from './archlens/setupArchlens';
-import { WebviewService } from './services/webviewService';
-import { GraphService } from './services/graphService';
-import { GraphViewService } from './services/graphViewService';
+import { showTreeView } from '#app/views/FileTreeView';
+import { Graph } from "#app/graph/graph";
+import type { File } from "#app/graph/graphJson";
+import * as setup from '#app/archlens/setupArchlens';
+import { WebviewService } from '#app/services/webviewService';
+import { GraphService } from '#app/services/graphService';
+import { GraphViewService } from '#app/services/graphViewService';
 
 export function activate(context: vscode.ExtensionContext) {
 

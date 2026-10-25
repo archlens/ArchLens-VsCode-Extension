@@ -1,8 +1,8 @@
 import * as cp from 'child_process';
-import * as file from '../filesystem/fileoperations';
+import * as file from '#app/filesystem/fileoperations';
 import * as vs from 'vscode';
-import * as path from '../filesystem/pathResolver';
-import * as setup from './setupArchlens';
+import * as path from '#app/filesystem/pathResolver';
+import * as setup from '#app/archlens/setupArchlens';
 
 export async function getGraphJson(graphPath: vs.Uri, extensionPath: vs.Uri, diffView : boolean, reload: boolean): Promise<string> {
 

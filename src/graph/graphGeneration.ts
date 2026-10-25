@@ -1,5 +1,5 @@
-import * as json_interfaces from "./graphJson";
-import { Graph } from "./graph";
+import * as json_interfaces from "#app/graph/graphJson";
+import { Graph } from "#app/graph/graph";
 
 
 export function buildGraph(json :string) : Graph {

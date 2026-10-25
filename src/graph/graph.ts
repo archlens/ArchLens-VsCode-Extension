@@ -1,4 +1,4 @@
-import * as json_interfaces from "./graphJson"
+import * as json_interfaces from "#app/graph/graphJson"
 
 export class Graph {
     public title : string;
@@ -24,7 +24,6 @@ export class Graph {
 
         return elements.concat(edges);
     }
-
 }
 
 export class Edge {
